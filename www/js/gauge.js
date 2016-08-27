@@ -5,6 +5,7 @@ var Gauge = function(radius,colour,maxScale,redNeedle) {
 	this.colour = colour;
 	this.maxScale = maxScale;
 	this.redNeedle = redNeedle;
+	this.needleWhite = new GaugePointerWhite();
 	this.gauge = new createjs.Container();
 
 	this.drawGraphic = function() {
@@ -92,7 +93,17 @@ var Gauge = function(radius,colour,maxScale,redNeedle) {
 
 	};
 
+	//draw gauge
 	this.drawGraphic();
+	//add needles
+	this.needleWhite.pointer.scaleX = this.needleWhite.pointer.scaleY = this.radius / 100;
+	this.gauge.addChild(this.needleWhite.pointer);
+	if (this.redNeedle) {
+		this.needleRed = new GaugePointerRed();
+		this.needleRed.pointer.scaleX = this.needleRed.pointer.scaleY = this.radius / 100;
+		this.gauge.addChild(this.needleRed.pointer);
+	}
+
 };
 
 Gauge.prototype = {
@@ -101,7 +112,26 @@ Gauge.prototype = {
 	},
 
 	setY : function(y) {
-	this.gauge.y = y;
+		this.gauge.y = y;
+	},
+
+	setNeedle : function(scale, type="white") {
+		var tick = 315 / this.maxScale;
+		var frameToGo = scale * tick;
+		if (type == "white") {
+			this.needleWhite.setPosition(frameToGo);
+		} else {
+			this.needleRed.setPosition(frameToGo);
+		}
+	},
+
+	getNeedleValue : function(type="white") {
+		var tick = 315 / this.maxScale;
+		if (type == "white") {
+			return this.needleWhite.getPosition() / tick;
+		} else {
+			return this.needleRed.getPosition() / tick;
+		}
 	}
 };
 

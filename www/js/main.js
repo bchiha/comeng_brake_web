@@ -34,7 +34,12 @@ function init() {
 	gaugeDual.setY(D_GAUGE_Y);
 	stage.addChild(gaugeDual.gauge);
 
+	//animation heartbeat
+	createjs.Ticker.addEventListener("tick", onTick);
 
-	stage.update();
+};
 
-}
+//update animation each tick
+var onTick = function(e) {
+	stage.update(e);
+};
