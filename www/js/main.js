@@ -34,6 +34,10 @@ function init() {
 	gaugeDual.setY(D_GAUGE_Y);
 	stage.addChild(gaugeDual.gauge);
 
+	focusGauges();
+	currentSimulation = "gauges";
+
+
 	//animation heartbeat
 	createjs.Ticker.addEventListener("tick", onTick);
 
@@ -42,4 +46,15 @@ function init() {
 //update animation each tick
 var onTick = function(e) {
 	stage.update(e);
+};
+
+//focus or unfocus Gauges
+var focusGauges = function(enlarge = true) {
+	if (enlarge) {
+		createjs.Tween.get(gaugeBrakeCylinder.gauge).to({x:300, y:450, scaleX:1.5, scaleY:1.5}, 1000, createjs.Ease.sineOut);
+		createjs.Tween.get(gaugeDual.gauge).to({x:700, y:450, scaleX:1.5, scaleY:1.5}, 1000, createjs.Ease.sineOut);
+	} else {
+		createjs.Tween.get(gaugeBrakeCylinder.gauge).to({x:BC_GAUGE_X, y:BC_GAUGE_Y, scaleX:1, scaleY:1}, 1000, createjs.Ease.sineOut);
+		createjs.Tween.get(gaugeDual.gauge).to({x:D_GAUGE_X, y:D_GAUGE_Y, scaleX:1, scaleY:1}, 1000, createjs.Ease.sineOut);
+	}
 };
