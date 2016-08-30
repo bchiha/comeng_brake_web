@@ -23,7 +23,7 @@ GaugePointer.prototype = {
 		//set timing equal to movement
 		time = Math.abs(pos - this.pos) / 315;
 		this.pos = pos;
-		createjs.Tween.get(this.pointer).to({rotation:pos+203}, 15000*time, createjs.Ease.quartOut);
+		createjs.Tween.get(this.pointer, {override:true}).to({rotation:pos+203}, 15000*time, createjs.Ease.quartOut);
 	}
 };
 

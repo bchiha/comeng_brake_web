@@ -1,7 +1,7 @@
 // main js file for simulator.  Requires CreateJS libraries
 
 // constants
-const VERSION = 'v1.5';
+const VERSION = 'v2.0';
 const MAX_REGULATING_VALVE = 550;
 const MIN_REGULATING_VALVE = 410;
 const EMERGENCY_PRESSURE = 275;
@@ -18,10 +18,14 @@ var stage = new createjs.Stage("canvas");
 function init() {
 	stage.enableMouseOver();
 
+	document.getElementById("version").innerHTML = VERSION+"";
+
 //TODO
-//	this.version_txt.text = VERSION;
 //	input = new KeyboardInput();
 //	addChild(input);
+
+	//set up Help Icon
+	helpIcon = new HelpIcon();
 
 	//set up gauges
 	gaugeBrakeCylinder = new Gauge(100,"#000000",500);
@@ -50,7 +54,7 @@ var onTick = function(e) {
 };
 
 //select simulation type
-var onSimulationType = function(combobox) {
+var onSimulationType = function(event) {
 	if (currentSimulation == "gauges") {
 		focusGauges(false);
 	}
@@ -58,7 +62,7 @@ var onSimulationType = function(combobox) {
 //		removeChild(activeSimulation);
 //				activeSimulation = null;
 //			}
-//			switch (combobox.value) {
+//			switch (event.value) {
 //				case "tripleValve" :
 //					addTripleValve();
 //					break;
@@ -68,7 +72,7 @@ var onSimulationType = function(combobox) {
 //				case "gauges" :
 //					focusGauges(true);
 //			}
-//			currentSimulation = combobox.value;
+//			currentSimulation = event.value;
 //			stage.focus = null;
 }
 
