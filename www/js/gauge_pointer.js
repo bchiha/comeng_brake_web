@@ -1,51 +1,70 @@
 // Gauge pointer
 
-var GaugePointer = function() {
-	this.pos = 0;
-	this.completed = true;
-	this.pointer = new createjs.Shape();
+//namespace
+this.brakeSimulator = this.brakeSimulator||{};
 
-	this.reset();
-};
+(function() {
+	"use strict";
 
-GaugePointer.prototype = {
-	reset : function() {
-		this.pos = 0;
+	//constructor
+	function GaugePointer() {
+		//public properties
+		this.pointer = new createjs.Shape();
+		//private properties
+		this._pos = 0;
+
+		this.reset();
+	}
+	var p = GaugePointer.prototype;
+
+	//public methods
+	p.reset = function() {
+		this._pos = 0;
 		this.pointer.rotation = 203;
-	},
+	};
 
-	getPosition : function() {
-		return this.pos;
-	},
+	p.getPosition = function() {
+		return this._pos;
+	};
 
-	setPosition : function(pos) {
+	p.setPosition = function(pos) {
 		var time;
 		//set timing equal to movement
-		time = Math.abs(pos - this.pos) / 315;
-		this.pos = pos;
+		time = Math.abs(pos - this._pos) / 315;
+		this._pos = pos;
 		createjs.Tween.get(this.pointer, {override:true}).to({rotation:pos+203}, 15000*time, createjs.Ease.quartOut);
-	}
-};
+	};
+
+	//add to namespace
+	brakeSimulator.GaugePointer = GaugePointer;
+}());
 
 // White Pointer extends GaugePointer
-var GaugePointerWhite = function() {
-	GaugePointer.call(this);
+(function() {
+	"use strict";
 
-	//draw white needle
-	this.pointer.graphics.ss(2).f("white").s("black").mt(0,0).lt(-5,-30).lt(0,-85).lt(5,-30).cp();
-};
+	//constructor
+	function GaugePointerWhite() {
+		this.GaugePointer_constructor();
+		this.pointer.graphics.ss(2).f("white").s("black").mt(0,0).lt(-5,-30).lt(0,-85).lt(5,-30).cp();
+	}
+	var p = brakeSimulator.extend(GaugePointerWhite, brakeSimulator.GaugePointer);
 
-GaugePointerWhite.prototype = Object.create(GaugePointer.prototype);
-GaugePointerWhite.prototype.constructor = GaugePointerWhite;
+	//add to namespace
+	brakeSimulator.GaugePointerWhite = brakeSimulator.promote(GaugePointerWhite, "GaugePointer");
+}());
 
 // Red Pointer extends GaugePointer
-var GaugePointerRed = function() {
-	GaugePointer.call(this);
+(function() {
+	"use strict";
 
-	//draw red needle
-	this.pointer.graphics.ss(2).f("red").s("black").mt(0,0).lt(-5,-30).lt(0,-85).lt(5,-30).cp();
-};
+	//constructor
+	function GaugePointerRed() {
+		this.GaugePointer_constructor();
+		this.pointer.graphics.ss(2).f("red").s("black").mt(0,0).lt(-5,-30).lt(0,-85).lt(5,-30).cp();
+	}
+	var p = brakeSimulator.extend(GaugePointerRed, brakeSimulator.GaugePointer);
 
-GaugePointerRed.prototype = Object.create(GaugePointer.prototype);
-GaugePointerRed.prototype.constructor = GaugePointerRed;
-
+	//add to namespace
+	brakeSimulator.GaugePointerRed = brakeSimulator.promote(GaugePointerRed, "GaugePointer");
+}());

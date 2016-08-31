@@ -28,14 +28,14 @@ function init() {
 	helpIcon = new HelpIcon();
 
 	//set up gauges
-	gaugeBrakeCylinder = new Gauge(100,"#000000",500);
-	gaugeBrakeCylinder.setX(BC_GAUGE_X);
-	gaugeBrakeCylinder.setY(BC_GAUGE_Y);
+	gaugeBrakeCylinder = new brakeSimulator.Gauge(100,"#000000",500);
+	gaugeBrakeCylinder.gauge.x = BC_GAUGE_X;
+	gaugeBrakeCylinder.gauge.y = BC_GAUGE_Y;
 	stage.addChild(gaugeBrakeCylinder.gauge);
 	//duplex gauges
-	gaugeDual = new Gauge(100,"#000000",1100,true);
-	gaugeDual.setX(D_GAUGE_X);
-	gaugeDual.setY(D_GAUGE_Y);
+	gaugeDual = new brakeSimulator.Gauge(100,"#000000",1100,true);
+	gaugeDual.gauge.x = D_GAUGE_X;
+	gaugeDual.gauge.y = D_GAUGE_Y;
 	stage.addChild(gaugeDual.gauge);
 
 	focusGauges();

@@ -28,18 +28,16 @@ var HelpIcon = function() {
 
 	this.helpInfo.scaleY = this.helpInfo.scaleX = 0.1;
 	this.helpInfo.alpha = 0;
-	this.helpInfo.x = 770;
-	this.helpInfo.y = 20;
+	this.helpInfo.x = 880;
+	this.helpInfo.y = 165;
+	this.helpInfo.regX = 110;
+	this.helpInfo.regY = 145;
 	this.helpInfo.addChild(background, uTxt, usageTxt, kTxt, keyboardTxt, copyrightTxt);
 };
 
 HelpIcon.prototype = {
 	onHelp : function(mouseIs) {
 		if (mouseIs == "over") {
-			//this.helpInfo.x = -100;
-			//this.helpInfo.y = 170;
-			//this.scaleX = this.scaleY = 0.1;
-			//this.alpha = 0;
 			stage.addChild(this.helpInfo);
 			createjs.Tween.get(this.helpInfo).to({scaleX:1, scaleY:1, alpha:1}, 500);
 		} else {
