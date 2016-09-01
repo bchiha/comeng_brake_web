@@ -48,10 +48,10 @@ this.brakeSimulator = this.brakeSimulator||{};
 		this.GaugePointer_constructor();
 		this.pointer.graphics.ss(2).f("white").s("black").mt(0,0).lt(-5,-30).lt(0,-85).lt(5,-30).cp();
 	}
-	var p = brakeSimulator.extend(GaugePointerWhite, brakeSimulator.GaugePointer);
+	var p = createjs.extend(GaugePointerWhite, brakeSimulator.GaugePointer);
 
 	//add to namespace
-	brakeSimulator.GaugePointerWhite = brakeSimulator.promote(GaugePointerWhite, "GaugePointer");
+	brakeSimulator.GaugePointerWhite = createjs.promote(GaugePointerWhite, "GaugePointer");
 }());
 
 // Red Pointer extends GaugePointer
@@ -63,8 +63,8 @@ this.brakeSimulator = this.brakeSimulator||{};
 		this.GaugePointer_constructor();
 		this.pointer.graphics.ss(2).f("red").s("black").mt(0,0).lt(-5,-30).lt(0,-85).lt(5,-30).cp();
 	}
-	var p = brakeSimulator.extend(GaugePointerRed, brakeSimulator.GaugePointer);
+	var p = createjs.extend(GaugePointerRed, brakeSimulator.GaugePointer);
 
 	//add to namespace
-	brakeSimulator.GaugePointerRed = brakeSimulator.promote(GaugePointerRed, "GaugePointer");
+	brakeSimulator.GaugePointerRed = createjs.promote(GaugePointerRed, "GaugePointer");
 }());

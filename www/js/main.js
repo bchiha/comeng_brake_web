@@ -42,18 +42,9 @@ function init() {
 	currentSimulation = "gauges";
 
 	//set up toggle swtich for EP CB
-	toggleSwitch = new ToggleSwitch();
+	toggleSwitch = new brakeSimulator.ToggleSwitch();
 	toggleSwitch.switchBase.x = 690;
 	toggleSwitch.switchBase.y = 10;
-	toggleSwitch.switchBase.addEventListener("click", function() {
-		toggleSwitch.toggleIt();
-	});
-	toggleSwitch.switchBase.addEventListener("mouseover", function() {
-		document.body.style.cursor = "pointer";
-	});
-	toggleSwitch.switchBase.addEventListener("mouseout", function() {
-		document.body.style.cursor = "default";
-	});
 	stage.addChild(toggleSwitch.switchBase);
 
 	//animation heartbeat
