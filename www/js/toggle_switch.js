@@ -24,6 +24,7 @@ this.brakeSimulator = this.brakeSimulator||{};
 		this.switchBase.scaleY = 0.8;
 		this.switchBase.x = 690;
 		this.switchBase.y = 10;
+		this.switchBase.cursor = "pointer";
 		this.switchBase.addChild(background, redBit, this._blackBit);
 
 		this._addEvents();
@@ -46,12 +47,6 @@ this.brakeSimulator = this.brakeSimulator||{};
 
 	//private methods
 	p._addEvents = function() {
-		this.switchBase.on("mouseover", function() {
-			document.body.style.cursor = "pointer";
-		});
-		this.switchBase.on("mouseout", function() {
-			document.body.style.cursor = "default";
-		})
 		this.switchBase.on("click", function() {
 			this.toggleIt();
 		}, this);

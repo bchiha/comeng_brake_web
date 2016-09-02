@@ -16,7 +16,13 @@ var stage = new createjs.Stage("canvas");
 
 // constructor
 function init() {
-	stage.enableMouseOver();
+	// enable touch interactions if supported on the current device:
+	if (createjs.Touch.isSupported) {
+		createjs.Touch.enable(stage);
+	};
+	// update mouse event ticks and track if outside canvas
+	stage.enableMouseOver(10);
+	stage.mouseMoveOutside = true;
 
 	document.getElementById("version").innerHTML = VERSION+"";
 
@@ -44,6 +50,10 @@ function init() {
 	//set up toggle swtich for EP CB
 	toggleSwitch = new brakeSimulator.ToggleSwitch();
 	stage.addChild(toggleSwitch.switchBase);
+
+	//set up BVIC
+	bvic = new brakeSimulator.BVIC;
+	stage.addChild(bvic.cockBase);
 
 	//animation heartbeat
 	createjs.Ticker.addEventListener("tick", onTick);
