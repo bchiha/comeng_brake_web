@@ -14,7 +14,7 @@ this.brakeSimulator = this.brakeSimulator||{};
 		this._onState = false;
 		this._blackBit = new createjs.Shape();
 
-		//draw the help icon
+		//draw the toggle switch
 		var background = new createjs.Shape();
 		background.graphics.ss(10).s("black").beginFill("white").drawRect(0, 0, 70, 40);
 		var redBit = new createjs.Shape();
@@ -22,6 +22,8 @@ this.brakeSimulator = this.brakeSimulator||{};
 		this._blackBit.graphics.beginFill("black").drawRect(5, 5, 30, 30);
 
 		this.switchBase.scaleY = 0.8;
+		this.switchBase.x = 690;
+		this.switchBase.y = 10;
 		this.switchBase.addChild(background, redBit, this._blackBit);
 
 		this._addEvents();
@@ -42,6 +44,7 @@ this.brakeSimulator = this.brakeSimulator||{};
 		return this._onState;
 	};
 
+	//private methods
 	p._addEvents = function() {
 		this.switchBase.on("mouseover", function() {
 			document.body.style.cursor = "pointer";

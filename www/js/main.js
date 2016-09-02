@@ -25,7 +25,7 @@ function init() {
 //	addChild(input);
 
 	//set up Help Icon
-	helpIcon = new HelpIcon();
+	helpIcon = new brakeSimulator.HelpIcon();
 
 	//set up gauges
 	gaugeBrakeCylinder = new brakeSimulator.Gauge(100,"#000000",500);
@@ -43,8 +43,6 @@ function init() {
 
 	//set up toggle swtich for EP CB
 	toggleSwitch = new brakeSimulator.ToggleSwitch();
-	toggleSwitch.switchBase.x = 690;
-	toggleSwitch.switchBase.y = 10;
 	stage.addChild(toggleSwitch.switchBase);
 
 	//animation heartbeat
