@@ -20,8 +20,8 @@ this.brakeSimulator = this.brakeSimulator||{};
 
 		this.cockBase.x = 350;
 		this.cockBase.y = 200;
-		this.cockBase.regX = 35/2;
-		this.cockBase.regY = 15/2;
+		this.cockBase.regX = 35/2*1.2;
+		this.cockBase.regY = 15/2*1.1;
 
 		this._addEvents();
 	}
@@ -103,6 +103,8 @@ this.brakeSimulator = this.brakeSimulator||{};
 			var dx = stage.mouseX - this.cockBase.x;
  			var dy = stage.mouseY - this.cockBase.y;
  			var rot = Math.round(Math.atan2(dy,dx) * 180 / Math.PI);
+			if (rot <= -80) { rot = -90; }
+			if (rot >= -10) { rot = 0; }
  			if (this._checkRotation(rot)) {
 				this.cockBase.rotation = rot;
  				this._updateStatus(rot);

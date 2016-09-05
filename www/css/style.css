@@ -7,7 +7,7 @@ canvas {
 
 select#simulationType {
     overflow: hidden;
-    width: 150px;
+    /*width: 200px;*/
     background: transparent;
     border: solid 1px;
     font-size: 14px;

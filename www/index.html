@@ -12,9 +12,10 @@
 		<div id="title">Comeng Brake Simulator</div>
 		<div id="version">v1.5</div>
 		<select id="simulationType" onchange="onSimulationType(this)">
-		    <option value="gauges" selected>Gauges</option>
-		    <option value="tripleValve">Triple Valve</option>
-		    <option value="brakeValve">Brake Valve</option>
+            <option value="" disabled selected hidden>Select Simulation</option>
+            <option value="gauges">Gauges</option>
+            <option value="tripleValve">Triple Valve</option>
+            <option value="brakeValve">Brake Valve</option>
 		</select>
 		<div id="help"><img src="img/help.png" alt="help" onmouseover="helpIcon.onHelp('over')" onmouseout="helpIcon.onHelp('out')"></div>
 	</div>
@@ -29,6 +30,7 @@
     <script src="js/help_icon.js"></script>
     <script src="js/toggle_switch.js"></script>
     <script src="js/bvic.js"></script>
+    <script src="js/brake_handle.js"></script>
 
 </body>
 

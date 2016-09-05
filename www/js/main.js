@@ -48,12 +48,19 @@ function init() {
 	currentSimulation = "gauges";
 
 	//set up toggle swtich for EP CB
-	toggleSwitch = new brakeSimulator.ToggleSwitch();
-	stage.addChild(toggleSwitch.switchBase);
+	epCB = new brakeSimulator.ToggleSwitch();
+	stage.addChild(epCB.switchBase);
 
 	//set up BVIC
 	bvic = new brakeSimulator.BVIC;
 	stage.addChild(bvic.cockBase);
+
+	//set up Brake Handle
+	brakeHandle = new brakeSimulator.BrakeHandle;
+	stage.addChild(brakeHandle.handleBase);
+	var previousPressure = 0;
+	var previousBPPressure = MAX_REGULATING_VALVE;
+	var eqPressure = MAX_REGULATING_VALVE;
 
 	//animation heartbeat
 	createjs.Ticker.addEventListener("tick", onTick);
