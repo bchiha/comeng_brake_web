@@ -26,10 +26,6 @@ function init() {
 
 	document.getElementById("version").innerHTML = VERSION+"";
 
-//TODO
-//	input = new KeyboardInput();
-//	addChild(input);
-
 	//set up Help Icon
 	helpIcon = new brakeSimulator.HelpIcon();
 
@@ -61,6 +57,9 @@ function init() {
 	var previousPressure = 0;
 	var previousBPPressure = MAX_REGULATING_VALVE;
 	var eqPressure = MAX_REGULATING_VALVE;
+
+	//assign keyboard event
+	document.onkeydown = onkeyPressed;
 
 	//animation heartbeat
 	createjs.Ticker.addEventListener("tick", onTick);
@@ -103,5 +102,23 @@ var focusGauges = function(enlarge = true) {
 	} else {
 		createjs.Tween.get(gaugeBrakeCylinder.gauge).to({x:BC_GAUGE_X, y:BC_GAUGE_Y, scaleX:1, scaleY:1}, 1000, createjs.Ease.sineOut);
 		createjs.Tween.get(gaugeDual.gauge).to({x:D_GAUGE_X, y:D_GAUGE_Y, scaleX:1, scaleY:1}, 1000, createjs.Ease.sineOut);
+	}
+};
+
+//keyboard events
+var onkeyPressed = function(keyboardEvent) {
+	switch (keyboardEvent.code) {
+		case "KeyO" :
+			bvic.setToOpen();
+			break;
+		case "KeyC" :
+			bvic.setToClosed();
+			break;
+		case "KeyE" :
+			epCB.toggleIt();
+			break;
+	}
+	if (keyboardEvent.code.substring(0,5) == "Digit") {
+		brakeHandle.stepTo(parseInt(keyboardEvent.code.charAt(5)));
 	}
 };
