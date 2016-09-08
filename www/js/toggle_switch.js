@@ -49,6 +49,7 @@ this.brakeSimulator = this.brakeSimulator||{};
 	p._addEvents = function() {
 		this.switchBase.on("click", function() {
 			this.toggleIt();
+			this.switchBase.dispatchEvent("clickToggle", true);
 		}, this);
 
 	};

@@ -6,13 +6,13 @@ const MAX_REGULATING_VALVE = 550;
 const MIN_REGULATING_VALVE = 410;
 const EMERGENCY_PRESSURE = 275;
 const STEP_PRESSURE = 35;
-const SIMULATIONS = [{label:"Gauges",data:"gauges"},
-	   {label:"Triple Valve",data:"tripleValve"},
-	   {label:"Brake Valve",data:"brakeValve"}];
 const BC_GAUGE_X = 600, BC_GAUGE_Y = 110, D_GAUGE_X = 850, D_GAUGE_Y = 110;
 
 // global variables
 var stage = new createjs.Stage("canvas");
+var previousPressure = 0;
+var previousBPPressure = MAX_REGULATING_VALVE;
+var eqPressure = MAX_REGULATING_VALVE;
 
 // constructor
 function init() {
@@ -39,27 +39,32 @@ function init() {
 	gaugeDual.gauge.x = D_GAUGE_X;
 	gaugeDual.gauge.y = D_GAUGE_Y;
 	stage.addChild(gaugeDual.gauge);
+	gaugeDual.setNeedle(750,"red");
 
 	focusGauges();
 	currentSimulation = "gauges";
 
 	//set up toggle swtich for EP CB
 	epCB = new brakeSimulator.ToggleSwitch();
+	epCB.switchBase.name = "epCB";
 	stage.addChild(epCB.switchBase);
 
 	//set up BVIC
 	bvic = new brakeSimulator.BVIC;
+	bvic.cockBase.name = "bvic";
 	stage.addChild(bvic.cockBase);
 
 	//set up Brake Handle
 	brakeHandle = new brakeSimulator.BrakeHandle;
+	brakeHandle.handleBase.name = "brakeHandle";
 	stage.addChild(brakeHandle.handleBase);
-	var previousPressure = 0;
-	var previousBPPressure = MAX_REGULATING_VALVE;
-	var eqPressure = MAX_REGULATING_VALVE;
 
 	//assign keyboard event
 	document.onkeydown = onkeyPressed;
+
+	//assign mouse events
+	stage.addEventListener("clickToggle", onToggleClick);
+	stage.addEventListener("moveHandle", onHandleMove);
 
 	//animation heartbeat
 	createjs.Ticker.addEventListener("tick", onTick);
@@ -133,4 +138,111 @@ var onkeyPressed = function(keyboardEvent) {
 	if (keyboardEvent.code.substring(0,5) == "Digit") {
 		brakeHandle.stepTo(parseInt(keyboardEvent.code.charAt(5)));
 	}
+	animateIt();
+};
+
+//mouse events
+var onToggleClick = function(mouseEvent) {
+	if (mouseEvent.target.name == "epCB") {
+		animateIt();
+	}
+};
+
+var onHandleMove = function(mouseEvent) {
+	if (mouseEvent.target.name == "bvic"  || mouseEvent.target.name == "brakeHandle") {
+		animateIt();
+	}
+};
+
+//link in handles and switch to gauges
+var animateIt = function() {
+	brakeHandle.setAir(epCB.switchState());
+	setBrakeCylinderGauge();
+	setDualGauge();
+};
+
+//update the Brake Cylinder Gauge based on the the brake/bvic handle position
+var setBrakeCylinderGauge = function() {
+	var step = brakeHandle.step();
+	var onAir = epCB.switchState();
+	var pressure = 0;
+	if (onAir) {
+		//step range is from 0 to 70 and Emergency of 100
+		//adjust brake cylinder between 0 and 275 with regard to brake pipe pressure
+		pressure = Math.min((EMERGENCY_PRESSURE / 70) * step, EMERGENCY_PRESSURE);
+		if ((bvic.isOpen() || step == 100) && (pressure == 0 || pressure > previousPressure)) {
+			gaugeBrakeCylinder.setNeedle(pressure);
+			previousPressure = pressure;
+		}
+	} else {
+		if (bvic.isOpen() || step == 10) {
+			if (step == 0) {
+				pressure = 0;
+			} else if (step == 1) {
+				pressure = STEP_PRESSURE * 2;
+			} else if (step > 1 && step <= 7) {
+				pressure = STEP_PRESSURE * step;
+			} else {
+				pressure = EMERGENCY_PRESSURE;
+			}
+			gaugeBrakeCylinder.setNeedle(pressure);
+		}
+	}
+};
+
+//update the Dual Gauge based on the brake handle/bvic position
+var setDualGauge = function() {
+	var step = brakeHandle.step();
+	var onAir = epCB.switchState();
+	var pressure = 0;
+	var position = "";
+	if (onAir) {
+		//step range is from 0 to 70 and Emergency of 100
+		//adjust Brake Pipe between MAX and MIN Regulating value
+		pressure = MAX_REGULATING_VALVE - ((MAX_REGULATING_VALVE - MIN_REGULATING_VALVE) / 70) * step;
+		if (step == 100) {
+			gaugeDual.setNeedle(0);
+			eqPressure = MIN_REGULATING_VALVE;
+		} else if (bvic.isOpen() && (step > 0 && step < 100) && gaugeDual.getNeedleValue() < MIN_REGULATING_VALVE) {
+			gaugeDual.setNeedle(MIN_REGULATING_VALVE);
+			previousBPPressure = pressure;
+			eqPressure = MIN_REGULATING_VALVE;
+		} else if (bvic.isOpen() && (step == 0 || pressure < previousBPPressure)) {
+			gaugeDual.setNeedle(pressure);
+			previousBPPressure = pressure;
+			eqPressure = pressure;
+		}
+	} else {
+		if (step == 10) {
+			gaugeDual.setNeedle(0);
+		} else if (bvic.isOpen()) {
+			if (step == 0) {
+				eqPressure = MAX_REGULATING_VALVE;
+			}
+			gaugeDual.setNeedle(eqPressure);
+		}
+		pressure = gaugeDual.getNeedleValue();
+	}
+	// if (activeSimulation) {
+	// 	switch (activeSimulation) {
+	// 		case tripleValve :
+	// 			if (gaugeDual.getNeedleValue() == 0) {
+	// 				tripleValve.slideIt("applied");
+	// 			} else if (gaugeDual.getNeedleValue() == MAX_REGULATING_VALVE) {
+	// 				tripleValve.slideIt("release");
+	// 			} else if (onAir) {
+	// 				tripleValve.slideIt("lap", gaugeBrakeCylinder.getNeedleValue() / 275);
+	// 			}
+	// 			break;
+	// 		case brakeValve :
+	// 			if (step == 0) {
+	// 				position = "release";
+	// 			} else if ((onAir && step == 100) || (!onAir && step == 10)) {
+	// 				position = "emergency";
+	// 			} else {
+	// 				position = "applied";
+	// 			}
+	// 			brakeValve.animateIt(position, pressure, step, onAir, bvic.isOpen());
+	// 			break;
+	// 	}
 };

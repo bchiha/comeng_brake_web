@@ -29,10 +29,10 @@ this.brakeSimulator = this.brakeSimulator||{};
 
 	p.setPosition = function(pos) {
 		var time;
-		//set timing equal to movement
+		//set timing equal to movement (just dosn't work at this stage!)
 		time = Math.abs(pos - this._pos) / 315;
 		this._pos = pos;
-		createjs.Tween.get(this.pointer, {override:true}).to({rotation:pos+203}, 15000*time, createjs.Ease.quartOut);
+		createjs.Tween.get(this.pointer, {override:true}).to({rotation:pos+203}, 5000, createjs.Ease.quartOut);
 	};
 
 	//add to namespace

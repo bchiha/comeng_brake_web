@@ -129,6 +129,7 @@ this.brakeSimulator = this.brakeSimulator||{};
  				}
  			}
  			this._updateText();
+			this.handleBase.dispatchEvent("moveHandle", true);
 		}, this);
 
 	};

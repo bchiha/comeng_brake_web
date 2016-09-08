@@ -110,6 +110,7 @@ this.brakeSimulator = this.brakeSimulator||{};
  				this._updateStatus(rot);
  			}
  			this._updateText();
+			this.cockBase.dispatchEvent("moveHandle", true);
 		}, this);
 
 	};
