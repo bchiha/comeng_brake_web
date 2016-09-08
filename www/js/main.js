@@ -117,6 +117,18 @@ var onkeyPressed = function(keyboardEvent) {
 		case "KeyE" :
 			epCB.toggleIt();
 			break;
+		case "KeyG" :
+			document.getElementById("simulationType").value="gauges";
+			document.getElementById("simulationType").onchange();
+			break;
+		case "KeyT" :
+			document.getElementById("simulationType").value="tripleValve";
+			document.getElementById("simulationType").onchange();
+			break;
+		case "KeyB" :
+			document.getElementById("simulationType").value="brakeValve";
+			document.getElementById("simulationType").onchange();
+			break;
 	}
 	if (keyboardEvent.code.substring(0,5) == "Digit") {
 		brakeHandle.stepTo(parseInt(keyboardEvent.code.charAt(5)));
