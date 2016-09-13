@@ -37,7 +37,7 @@ div#version {
 div#help {
 	float: right;
 	margin-right: 10px;
-	cursor: help;
+	cursor: pointer;
 }
 
 div#help img {

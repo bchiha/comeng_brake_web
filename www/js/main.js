@@ -57,7 +57,10 @@ function init() {
 	//set up Brake Handle
 	brakeHandle = new brakeSimulator.BrakeHandle;
 	brakeHandle.handleBase.name = "brakeHandle";
-	stage.addChild(brakeHandle.handleBase);
+	brakeArrow = new createjs.Shape();
+	brakeArrow.graphics.f("#0000CC").mt(100,260).lt(92.5,270).lt(107.5,270).lt(100,260);
+	stage.addChild(brakeHandle.handleBase, brakeArrow);
+
 
 	//assign keyboard event
 	document.onkeydown = onkeyPressed;

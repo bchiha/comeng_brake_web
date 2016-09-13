@@ -22,8 +22,6 @@ this.brakeSimulator = this.brakeSimulator||{};
 
 		this.handleBase.x = 100;
 		this.handleBase.y = 200;
-		//this.handleBase.regX = 35/2*1.2;
-		//this.handleBase.regY = 15/2*1.1;
 
 		this._addEvents();
 	}
@@ -59,31 +57,42 @@ this.brakeSimulator = this.brakeSimulator||{};
 
 	//private methods
 	p._drawHandle = function() {
-		var hexigon = [[0,0],[0,15],[10,25],[25,25],[35,15],[35,0],[25,-10],[10,-10],[0,0]];
-		var handle = [[30,20],[120,20],[125,15],[127.5,10],[127.5,5],[125,0],[120,-5],[30,-5]];
-		var g = this._handle.graphics;
+		var handle = [[30,20],[170,20],[175,15],[177,10],[178.5,5],[178.5,0],[177,-5],[175,-10],[170,-15],[30,-15]];
+		var g = this._handle.graphics, dx, dy;
+		g.f("#B93037").dc(0, 0, 60);
+		g.f("black").dc(0, 0, 50);
 		this._drawPoly(g, handle);
-		this._drawPoly(g, hexigon);
-		g.mt(25,10).bf("gray").dc(35/2,15/2,7.5);
-		this._handle.scaleX = 1.2;
-		this._handle.scaleY = 1.1;
+		g.ss(2).s("#00CC00");
+		for (var i = 0; i < 11; i++) {
+			dx = -Math.sin(10*i / 180 * Math.PI) * 50;
+			dy = Math.cos(10*i / 180 * Math.PI) * 50;
+			if (i >= 1 & i < 8) {
+				g.s("white");
+			} else if (i == 8) {
+				g.s("#B93037");
+			}
+			if (!(i == 8 || i == 9)) {
+				g.mt(0,0);
+				g.lt(dx,dy);
+			}
+		};
+		g.es().f("gray").dc(0, 0, 20);
+		g.es().f("black").dc(0, 0, 5);
 		this._handle.cursor = "pointer";
-			// 		graphics.lineStyle( 3, 0x0074B9 );
-			// DrawingShapes.drawPolygon( graphics, 100, 267, 3, 5,-30 );
 		var txtStep = new createjs.Text("Run & Rel", "20px Arial", "#00CC00");
-		txtStep.y = 30;
-		txtStep.x = 40;
+		txtStep.y = 25;
+		txtStep.x = 70;
 		txtStep.name = "text";
 		this.handleBase.addChild(this._handle, txtStep);
 	};
 
 	p._drawPoly = function(g, pts) {
-		g.ss(3).s("black").beginFill("gray");
+		g.beginFill("black");
 		g.mt(pts[0][0],pts[0][1]);
 		for (var i = 1; i < pts.length; i++) {
 			g.lt(pts[i][0], pts[i][1]);
 		}
-		g.es;
+		g.es;;
 	};
 	
 	p._updateText = function() {
