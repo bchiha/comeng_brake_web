@@ -23,6 +23,8 @@ function init() {
 	// update mouse event ticks and track if outside canvas
 	stage.enableMouseOver(10);
 	stage.mouseMoveOutside = true;
+	stage.canvas.width = window.innerWidth;
+	stage.canvas.height = window.innerHeight;
 
 	document.getElementById("version").innerHTML = VERSION+"";
 
