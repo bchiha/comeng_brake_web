@@ -13,6 +13,8 @@ var stage = new createjs.Stage("canvas");
 var previousPressure = 0;
 var previousBPPressure = MAX_REGULATING_VALVE;
 var eqPressure = MAX_REGULATING_VALVE;
+var activeSimulation = null;
+var currentSimulation = "gauges";
 
 // constructor
 function init() {
@@ -86,22 +88,22 @@ var onSimulationType = function(event) {
 	if (currentSimulation == "gauges") {
 		focusGauges(false);
 	}
-//	if (activeSimulation != null) {
-//		removeChild(activeSimulation);
-//				activeSimulation = null;
-//			}
-//			switch (event.value) {
-//				case "tripleValve" :
-//					addTripleValve();
-//					break;
-//				case "brakeValve" :
-//					addBrakeValve();
-//					break;
-//				case "gauges" :
-//					focusGauges(true);
-//			}
-//			currentSimulation = event.value;
-//			stage.focus = null;
+	if (activeSimulation != null) {
+		stage.removeChild(activeSimulation);
+		activeSimulation = null;
+	}
+	switch (event.value) {
+		case "tripleValve" :
+			displayTripleValve();
+			break;
+		case "brakeValve" :
+			displayBrakeValve();
+			break;
+		case "gauges" :
+			focusGauges(true);
+	}
+	currentSimulation = event.value;
+	stage.update();
 }
 
 //focus or unfocus Gauges
@@ -113,6 +115,20 @@ var focusGauges = function(enlarge = true) {
 		createjs.Tween.get(gaugeBrakeCylinder.gauge).to({x:BC_GAUGE_X, y:BC_GAUGE_Y, scaleX:1, scaleY:1}, 1000, createjs.Ease.sineOut);
 		createjs.Tween.get(gaugeDual.gauge).to({x:D_GAUGE_X, y:D_GAUGE_Y, scaleX:1, scaleY:1}, 1000, createjs.Ease.sineOut);
 	}
+};
+
+//display triple valve
+var displayTripleValve = function() {
+	tripleValve = new brakeSimulator.TripleValve;
+	stage.addChild(tripleValve.valveBase);
+	activeSimulation = tripleValve.valveBase;
+};
+
+//display brake valve
+var displayBrakeValve = function() {
+	brakeValve = new brakeSimulator.BrakeValve;
+	stage.addChild(brakeValve.valveBase);
+	activeSimulation = brakeValve.valveBase;
 };
 
 //keyboard events
@@ -228,26 +244,27 @@ var setDualGauge = function() {
 		}
 		pressure = gaugeDual.getNeedleValue();
 	}
-	// if (activeSimulation) {
-	// 	switch (activeSimulation) {
-	// 		case tripleValve :
-	// 			if (gaugeDual.getNeedleValue() == 0) {
-	// 				tripleValve.slideIt("applied");
-	// 			} else if (gaugeDual.getNeedleValue() == MAX_REGULATING_VALVE) {
-	// 				tripleValve.slideIt("release");
-	// 			} else if (onAir) {
-	// 				tripleValve.slideIt("lap", gaugeBrakeCylinder.getNeedleValue() / 275);
-	// 			}
-	// 			break;
-	// 		case brakeValve :
-	// 			if (step == 0) {
-	// 				position = "release";
-	// 			} else if ((onAir && step == 100) || (!onAir && step == 10)) {
-	// 				position = "emergency";
-	// 			} else {
-	// 				position = "applied";
-	// 			}
-	// 			brakeValve.animateIt(position, pressure, step, onAir, bvic.isOpen());
-	// 			break;
-	// 	}
+	if (activeSimulation) {
+		switch (activeSimulation) {
+			case tripleValve.valveBase :
+				if (gaugeDual.getNeedleValue() == 0) {
+					tripleValve.slideIt("applied");
+				} else if (gaugeDual.getNeedleValue() == MAX_REGULATING_VALVE) {
+					tripleValve.slideIt("release");
+				} else if (onAir) {
+					tripleValve.slideIt("lap", gaugeBrakeCylinder.getNeedleValue() / 275);
+				}
+				break;
+			// case brakeValve.valveBase :
+			// 	if (step == 0) {
+			// 		position = "release";
+			// 	} else if ((onAir && step == 100) || (!onAir && step == 10)) {
+			// 		position = "emergency";
+			// 	} else {
+			// 		position = "applied";
+			// 	}
+			// 	brakeValve.animateIt(position, pressure, step, onAir, bvic.isOpen());
+			// 	break;
+		}
+	}
 };
