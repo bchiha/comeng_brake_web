@@ -255,16 +255,16 @@ var setDualGauge = function() {
 					tripleValve.slideIt("lap", gaugeBrakeCylinder.getNeedleValue() / 275);
 				}
 				break;
-			// case brakeValve.valveBase :
-			// 	if (step == 0) {
-			// 		position = "release";
-			// 	} else if ((onAir && step == 100) || (!onAir && step == 10)) {
-			// 		position = "emergency";
-			// 	} else {
-			// 		position = "applied";
-			// 	}
-			// 	brakeValve.animateIt(position, pressure, step, onAir, bvic.isOpen());
-			// 	break;
+			case brakeValve.valveBase :
+				if (step == 0) {
+					position = "release";
+				} else if ((onAir && step == 100) || (!onAir && step == 10)) {
+					position = "emergency";
+				} else {
+					position = "applied";
+				}
+				brakeValve.animateIt(position, pressure, step, onAir, bvic.isOpen());
+				break;
 		}
 	}
 };
