@@ -44,9 +44,25 @@ this.brakeSimulator = this.brakeSimulator||{};
 		this._relayValveExhaustFlap = new createjs.Bitmap("img/bv/relayValveExhaustFlap.png");
 		this._airRVBP = new createjs.Bitmap("img/bv/airRelayValveBp.png");
 		this._airRVEQ = new createjs.Bitmap("img/bv/airRelayValveEq.png");
-
+		//full simulation stuff
+		this._fullBackgroundBase = new createjs.Container();
+		this._fullBackground = new createjs.Bitmap("img/bv/fullBackground.png");
+		this._airLomv = new createjs.Bitmap("img/bv/airLomv.png");
+		this._airCVtoE = new createjs.Bitmap("img/bv/airCVtoE.png");
+		this._airBvic = new createjs.Bitmap("img/bv/airBviCock.png");
+		this._airCVOpen = new createjs.Bitmap("img/bv/airChargingValveOpen.png");
+		this._airCVClosed = new createjs.Bitmap("img/bv/airChargingValveClosed.png");
+		this._airRPtoRV = new createjs.Bitmap("img/bv/airRPtoRV.png");
+		this._airCVtoRV = new createjs.Bitmap("img/bv/airCVtoRV.png");
+		this._airRVtoBV = new createjs.Bitmap("img/bv/airRVtoBV.png");
+		this._airBVtoBP = new createjs.Bitmap("img/bv/airBVtoBP.png");
+		this._airRVtoLM = new createjs.Bitmap("img/bv/airRVtoLM.png");
+		this._airEQ = new createjs.Bitmap("img/bv/airEQ.png");
+		//other stuff
 		this._compTextBase = new createjs.Container();
-		this._fullSimulation = new createjs.Shape();
+		this._fullSimulationBtn = new createjs.Sprite();
+		this._fullsimulationHelper = null
+		this._instructions = new createjs.Text();
 
 		//set info for components, starting x, y
 		this._chargingValveInfo = {origX:0,origY:160,desc:"Charge/Emerg. Exhuast Valve"};
@@ -81,15 +97,17 @@ this.brakeSimulator = this.brakeSimulator||{};
 		if (this._isActive.chargingValve) {
 			if (position == "emergency") {
 				tl.addTween(
-					createjs.Tween.get(this._chargingValveSlider, {override:true}).to({x:30}, 500)
-					// tl.to([this.airCVOpen, this.airCVtoRV], 0, {alpha:0}, 0);
-					// tl.to([this.airCVClosed,this.airCVtoE], 1, {alpha:1}, 0.5);
-					// tl.to([this.airCVClosed,this.airCVtoE], 1, {alpha:0}, 1.5);
+					createjs.Tween.get(this._chargingValveSlider, {override:true}).to({x:30}, 500),
+					createjs.Tween.get(this._airCVOpen, {override:true}).to({alpha:0}, 0),
+					createjs.Tween.get(this._airCVtoRV, {override:true}).to({alpha:0}, 0),
+					createjs.Tween.get(this._airCVtoE, {override:true}).wait(500).to({alpha:1}, 1000).to({alpha:0}, 1000),
+					createjs.Tween.get(this._airCVClosed, {override:true}).wait(500).to({alpha:1}, 1000).to({alpha:0}, 1000)
 				);
 			} else {
 				tl.addTween(
-					createjs.Tween.get(this._chargingValveSlider, {override:true}).to({x:0}, 500)
-					// tl.to([this.airCVOpen,this.airCVtoRV], 0.5, {alpha:1}, 0.5);
+					createjs.Tween.get(this._chargingValveSlider, {override:true}).to({x:0}, 500),
+					createjs.Tween.get(this._airCVOpen, {override:true}).to({alpha:1}, 500),
+					createjs.Tween.get(this._airCVtoRV, {override:true}).wait(500).to({alpha:1}, 500)
 				);
 			}
 		}
@@ -108,18 +126,12 @@ this.brakeSimulator = this.brakeSimulator||{};
 					createjs.Tween.get(this._lomvSlider, {override:true}).to({y:30}, 500),
 					createjs.Tween.get(this._lomvBall, {override:true}).to({x:27,y:72}, 500)
 				);
-				if (pressure < this._previousPressure || position == "release") {
-						//tl.to(this.airLomv, 1, {alpha:(1-((pressurePercent*7)/15))}, 0);
-				}
 			} else {
 				tl.addTween(
 					createjs.Tween.get(this._lomvSlider, {override:true}).to({y:5}, 500)
-					//tl.to(this.airLomv, 1, {alpha:1}, 0);
 				);
 				if (this._lomvBall.y == 72 || position == "release") {
-					tl.addTween(
-						createjs.Tween.get(this._lomvBall, {override:true}).to({y:47}, 500).to({x:32}, 1000).to({x:27}, 500)
-					);
+					tl.addTween(createjs.Tween.get(this._lomvBall, {override:true}).to({y:47}, 500).to({x:32}, 1000).to({x:27}, 500));
 				}
 			}
 		}
@@ -128,14 +140,14 @@ this.brakeSimulator = this.brakeSimulator||{};
 			if (position == "release") {
 				tl.addTween(
 					createjs.Tween.get(this._rpValveSlider, {override:true}).to({x:13}, 500),
-					createjs.Tween.get(this._airRPOut, {override:true}).to({alpha:1}, 500)
-					//createjs.Tween.get(this._airRPtoRV, {override:true}).to({alpha:1}, 500)
+					createjs.Tween.get(this._airRPOut, {override:true}).to({alpha:1}, 500),
+					createjs.Tween.get(this._airRPtoRV, {override:true}).to({alpha:1}, 500)
 				);
 			} else {
 				tl.addTween(
 					createjs.Tween.get(this._rpValveSlider, {override:true}).to({x:24}, 500),
-					createjs.Tween.get(this._airRPOut, {override:true}).wait(500).to({alpha:0}, 500)
-					//createjs.Tween.get(this._airRPtoRV, {override:true}).wait(500).to({alpha:0}, 500)
+					createjs.Tween.get(this._airRPOut, {override:true}).wait(500).to({alpha:0}, 500),
+					createjs.Tween.get(this._airRPtoRV, {override:true}).wait(500).to({alpha:0}, 500)
 				);
 			}
 		}
@@ -154,21 +166,21 @@ this.brakeSimulator = this.brakeSimulator||{};
 				if (onAir) {
 					tl.addTween(
 						createjs.Tween.get(this._airRegV, {override:true}).to({alpha:(1-((pressurePercent*7)/15))}, 1000),
-						//createjs.Tween.get(this._airRVtoLM, {override:true}).to({alpha:(1-((pressurePercent*7)/15))}, 1000),
+						createjs.Tween.get(this._airRVtoLM, {override:true}).to({alpha:(1-((pressurePercent*7)/15))}, 1000),
 						createjs.Tween.get(this._airRegVJ, {override:true}).to({alpha:(1-((pressurePercent*7)/15))}, 1000).to({alpha:0}, 1000)
 					);
 				} else {
 					tl.addTween(
 						createjs.Tween.get(this._airRegV, {override:true}).to({alpha:(1-(step/15))}, 1000),
-						//createjs.Tween.get(this._airRVtoLM, {override:true}).to({alpha:(1-((pressurePercent*7)/15))}, 1000),
+						createjs.Tween.get(this._airRVtoLM, {override:true}).to({alpha:(1-(step/15))}, 1000),
 						createjs.Tween.get(this._airRegVJ, {override:true}).to({alpha:(1-(step/15))}, 1000).to({alpha:0}, 1000)
 					);
 				}
 			}
 			if (position == "release") {
 				tl.addTween(
-					createjs.Tween.get(this._airRegV, {override:true}).to({alpha:1}, 1000)
-					//createjs.Tween.get(this._airRVtoLM, {override:true}).to({alpha:1}, 1000)
+					createjs.Tween.get(this._airRegV, {override:true}).to({alpha:1}, 1000),
+					createjs.Tween.get(this._airRVtoLM, {override:true}).to({alpha:1}, 1000)
 				);
 			}
 			if (! onAir) {
@@ -186,45 +198,48 @@ this.brakeSimulator = this.brakeSimulator||{};
 				tl.addTween(
 					createjs.Tween.get(this._relayValveDiapham, {override:true}).to({scaleX:(1 + pressurePercent * 7)}, 2000),
 					createjs.Tween.get(this._airRVBP, {override:true}).wait(500).to({alpha:(1-((pressurePercent*7)/15))}, 1000),
-						//createjs.Tween.get(this._airBvic, {override:true}).wait(500).to({alpha:(1-((pressurePercent*7)/15))}, 1000),
-						//createjs.Tween.get(this._airRVtoBV, {override:true}).wait(500).to({alpha:(1-((pressurePercent*7)/15))}, 1000),
-					createjs.Tween.get(this._airRVEQ, {override:true}).to({alpha:(1-((pressurePercent*7)/15))}, 1000)
-						//createjs.Tween.get(this._airEQ, {override:true}).to({alpha:(1-((pressurePercent*7)/15))}, 1000),
+					createjs.Tween.get(this._airBvic, {override:true}).wait(500).to({alpha:(1-((pressurePercent*7)/15))}, 1000),
+					createjs.Tween.get(this._airRVtoBV, {override:true}).wait(500).to({alpha:(1-((pressurePercent*7)/15))}, 1000),
+					createjs.Tween.get(this._airRVEQ, {override:true}).to({alpha:(1-((pressurePercent*7)/15))}, 1000),
+					createjs.Tween.get(this._airLomv, {override:true}).to({alpha:(1-((pressurePercent*7)/15))}, 1000),
+					createjs.Tween.get(this._airEQ, {override:true}).to({alpha:(1-((pressurePercent*7)/15))}, 1000)
 				);
 				if (bvicOpen) {
-					//tl.addTween(createjs.Tween.get(this._airBVtoBP, {override:true}).wait(500).to({alpha:(1-((pressurePercent*7)/15))}, 1000));
+					tl.addTween(createjs.Tween.get(this._airBVtoBP, {override:true}).wait(500).to({alpha:(1-((pressurePercent*7)/15))}, 1000));
 				}
 			} else if (onAir && position == "applied" && this._relayValveDiapham.scaleX <= (1 + pressurePercent * 7)) {
 				tl.addTween(
 					createjs.Tween.get(this._relayValveDiapham, {override:true}).to({scaleX:(1 + pressurePercent * 7)}, 2000),
 					createjs.Tween.get(this._airRVBP, {override:true}).wait(500).to({alpha:(1-((pressurePercent*7)/15))}, 1000),
-						//createjs.Tween.get(this._airBvic, {override:true}).wait(500).to({alpha:(1-((pressurePercent*7)/15))}, 1000),
-						//createjs.Tween.get(this._airRVtoBV, {override:true}).wait(500).to({alpha:(1-((pressurePercent*7)/15))}, 1000),
+					createjs.Tween.get(this._airBvic, {override:true}).wait(500).to({alpha:(1-((pressurePercent*7)/15))}, 1000),
+					createjs.Tween.get(this._airRVtoBV, {override:true}).wait(500).to({alpha:(1-((pressurePercent*7)/15))}, 1000),
 					createjs.Tween.get(this._airRVEQ, {override:true}).to({alpha:(1-((pressurePercent*7)/15))}, 1000),
-						//createjs.Tween.get(this._airEQ, {override:true}).to({alpha:(1-((pressurePercent*7)/15))}, 1000),
-					createjs.Tween.get(this._relayValveExhaustFlap, {override:true}).to({rotation:60}, 1000, createjs.Ease.sineOut).to({rotation:0}, 1000, createjs.Ease.sineOut)
-					//createjs.Tween.get(this._airCVtoE, {override:true}).to({alpha:(1-((pressurePercent*7)/15))}, 1000).to({alpha:0}, 1000)
+					createjs.Tween.get(this._airLomv, {override:true}).to({alpha:(1-((pressurePercent*7)/15))}, 1000),
+					createjs.Tween.get(this._airEQ, {override:true}).to({alpha:(1-((pressurePercent*7)/15))}, 1000),
+					createjs.Tween.get(this._relayValveExhaustFlap, {override:true}).to({rotation:60}, 1000, createjs.Ease.sineOut).to({rotation:0}, 1000, createjs.Ease.sineOut),
+					createjs.Tween.get(this._airCVtoE, {override:true}).to({alpha:(1-((pressurePercent*7)/15))}, 1000).to({alpha:0}, 1000)
 				);
 				if (bvicOpen) {
-					//tl.addTween(createjs.Tween.get(this._airBVtoBP, {override:true}).wait(500).to({alpha:(1-((pressurePercent*7)/15))}, 1000));
+					tl.addTween(createjs.Tween.get(this._airBVtoBP, {override:true}).wait(500).to({alpha:(1-((pressurePercent*7)/15))}, 1000));
 				}
 			} else if (position == "emergency") {
 				if (onAir) {
 					tl.addTween(
 						createjs.Tween.get(this._relayValveDiapham, {override:true}).to({scaleX:8}, 2000),
-						createjs.Tween.get(this._airRVEQ, {override:true}).to({alpha:(1-((1*7)/15))}, 1000)
-						//createjs.Tween.get(this._airEQ, {override:true}).to({alpha:(1-((1*7)/15))}, 1000)
+						createjs.Tween.get(this._airRVEQ, {override:true}).to({alpha:(1-((1*7)/15))}, 1000),
+						createjs.Tween.get(this._airLomv, {override:true}).to({alpha:(1-((1*7)/15))}, 1000),
+						createjs.Tween.get(this._airEQ, {override:true}).to({alpha:(1-((1*7)/15))}, 1000)
 					);
 				}
 				if (bvicOpen) {
 					tl.addTween(
-						createjs.Tween.get(this._airRVBP, {override:true}).wait(500).to({alpha:0}, 1000)
-						//createjs.Tween.get(this._airBvic, {override:true}).wait(500).to({alpha:0}, 1000)
-						//createjs.Tween.get(this._airRVtoBV, {override:true}).wait(500).to({alpha:0}, 1000)
-						//createjs.Tween.get(this._airBVtoBP, {override:true}).wait(500).to({alpha:0}, 1000)
+						createjs.Tween.get(this._airRVBP, {override:true}).wait(500).to({alpha:0}, 1000),
+						createjs.Tween.get(this._airBvic, {override:true}).wait(500).to({alpha:0}, 1000),
+						createjs.Tween.get(this._airRVtoBV, {override:true}).wait(500).to({alpha:0}, 1000),
+						createjs.Tween.get(this._airBVtoBP, {override:true}).wait(500).to({alpha:0}, 1000)
 					);
 				} else {
-					//tl.addTween(createjs.Tween.get(this._airBVtoBP, {override:true}).wait(500).to({alpha:0}, 1000));
+					tl.addTween(createjs.Tween.get(this._airBVtoBP, {override:true}).wait(500).to({alpha:0}, 1000));
 				}
 			}
 		}
@@ -241,7 +256,11 @@ this.brakeSimulator = this.brakeSimulator||{};
 		this.valveBase.on("click", function(event) {
 			//find the component and scale it to center screen
 			//also return the existing component
-			if (event.target.name == "fullSimulation" || event.target.name == "fullBackground" || this._fullSimulation.selected) {
+			if (event.target.name == "fullBackground" || this._fullSimulationBtn.currentAnimation == "ss" || event.target.name == "instructions") {
+				return;
+			}
+			if (event.target.name == "fullSimulation") {
+				this._onFullSimulationClick(event);
 				return;
 			}
 			if (this._activeComp.name != "") {
@@ -359,6 +378,102 @@ this.brakeSimulator = this.brakeSimulator||{};
 		}, this);
 	};
 	
+	//simulator all components together loading extra air and background
+	p._onFullSimulationClick = function(event) {
+		var newState = this._fullSimulationBtn.currentAnimation == "fsh" ? "ss" : "fs";
+		var tl = new createjs.Timeline([], null, {paused:true});
+		//update helper
+		this._fullsimulationHelper.overLabel = newState + "h";
+		this._fullsimulationHelper.outLabel = newState;
+		this._fullSimulationBtn.gotoAndStop(newState + "h");
+		//deactivate active component if any and set all to active
+		for (var comp in this._isActive) {
+			if (newState == "ss" && this._isActive[comp] == true) {
+				//reset the active component
+				this._isActive[this._activeComp.name] = false;
+				createjs.Tween.get(this._activeComp.component, {override:true}).to({x:this._activeComp.origX, y:this._activeComp.origY, scaleX:1, scaleY:1}, 1000, createjs.Ease.sineOut);
+			}
+			//make all active or deactive
+			this._isActive[comp] = newState == "ss" ? true : false;
+		}
+		//either full simulation or separate simulation
+		if (newState == "ss") {
+			tl.addTween(
+				createjs.Tween.get(this._rpValveBase).to({x:71.5,y:55}, 2000, createjs.Ease.sineOut),
+				createjs.Tween.get(this._regulatingValveBase).to({x:67,y:145}, 2000, createjs.Ease.sineOut),
+				createjs.Tween.get(this._lomvBase).to({x:211,y:155}, 2000, createjs.Ease.sineOut),
+				createjs.Tween.get(this._relayValveBase).to({x:463,y:145}, 2000, createjs.Ease.sineOut),
+				createjs.Tween.get(this._chargingValveBase).to({x:679,y:50}, 2000, createjs.Ease.sineOut),
+				createjs.Tween.get(this._bvicBase).to({x:734,y:241}, 2000, createjs.Ease.sineOut)
+			);
+			//component air
+			this._airLomv.name = "lomv";
+			this._airLomv.x = 26;
+			this._airLomv.y = 53;
+			this._lomvBase.addChildAt(this._airLomv,1);
+			this._airCVtoE.alpha = 0;
+			this._airCVtoE.x = -52;
+			this._airCVtoE.y = 52;
+			this._chargingValveBase.addChild(this._airCVtoE);
+			this._airBvic.name = "bvic";
+			this._airBvic.x = 20;
+			this._airBvic.y = 19;
+			this._airBvic.scaleY = 1.1;
+			this._bvicBase.addChildAt(this._airBvic,1);
+			this._airCVOpen.name = this._airCVClosed.name = "chargingValve";
+			this._airCVOpen.x = 38;
+			this._airCVOpen.y = 20;
+			this._chargingValveBase.addChildAt(this._airCVOpen,1);
+			this._airCVClosed.alpha = 0;
+			this._airCVClosed.x = 68;
+			this._airCVClosed.y = 20;
+			this._chargingValveBase.addChildAt(this._airCVClosed,2);
+			//pipe air;
+			this._airRPtoRV.x = 99;
+			this._airRPtoRV.y = 87;
+			this._airCVtoRV.x = 597;
+			this._airCVtoRV.y = 71;
+			this._airRVtoBV.x = 592;
+			this._airRVtoBV.y = 178;
+			this._airBVtoBP.x = 727;
+			this._airBVtoBP.y = 41;
+			this._airBVtoBP.alpha = 0;
+			this._airRVtoLM.x = 154
+			this._airRVtoLM.y = 178;
+			this._airEQ.x = 242;
+			this._airEQ.y = 140;
+			this._fullBackground.name = "fullBackground";
+			this._fullBackgroundBase.addChild(this._fullBackground, this._airRPtoRV, this._airCVtoRV, this._airRVtoBV, this._airBVtoBP, this._airRVtoLM, this._airEQ);
+			//add em all
+			this.valveBase.addChild(this._fullBackgroundBase);
+			tl.addTween(
+				createjs.Tween.get(this._fullBackgroundBase).to({x:30,y:30,alpha:1,scaleX:1,scaleY:1}, 2000, createjs.Ease.sineOut),
+				createjs.Tween.get(this._instructions).to({alpha:0}, 2000)
+			);
+		} else {
+			tl.addTween(
+				createjs.Tween.get(this._rpValveBase).to({x:this._rpValveInfo.origX,y:this._rpValveInfo.origY}, 2000, createjs.Ease.backOut),
+				createjs.Tween.get(this._regulatingValveBase).to({x:this._regulatingValveInfo.origX,y:this._regulatingValveInfo.origY}, 2000, createjs.Ease.backOut),
+				createjs.Tween.get(this._lomvBase).to({x:this._lomvInfo.origX,y:this._lomvInfo.origY}, 2000, createjs.Ease.backOut),
+				createjs.Tween.get(this._relayValveBase).to({x:this._relayValveInfo.origX,y:this._relayValveInfo.origY}, 2000, createjs.Ease.backOut),
+				createjs.Tween.get(this._chargingValveBase).to({x:this._chargingValveInfo.origX,y:this._chargingValveInfo.origY}, 2000, createjs.Ease.backOut),
+				createjs.Tween.get(this._bvicBase).to({x:this._bvicInfo.origX,y:this._bvicInfo.origY}, 2000, createjs.Ease.backOut),
+				createjs.Tween.get(this._fullBackgroundBase).to({alpha:0,scaleX:2,scaleY:2}, 2000, createjs.Ease.sineOut).call(function() {
+					this.valveBase.removeChild(this._fullBackgroundBase);
+				}, [], this),
+				createjs.Tween.get(this._instructions).to({alpha:1}, 2000)
+			);
+			//remove erronious air
+			this._chargingValveBase.removeChild(this._airCVtoE);
+			this._lomvBase.removeChild(this._airLomv);
+			this._bvicBase.removeChild(this._airBvic);
+			this._chargingValveBase.removeChild(this._airCVOpen);
+			this._chargingValveBase.removeChild(this._airCVClosed);
+		}
+		//animate it
+		tl.gotoAndPlay(0);
+	};
+
 	p._drawIt = function() {
 		//charging valve
 		this._chargingValve.name = this._chargingValveSlider.name = "chargingValve";
@@ -431,8 +546,26 @@ this.brakeSimulator = this.brakeSimulator||{};
 		this._relayValveBase.x = this._relayValveInfo.origX;
 		this._relayValveBase.y = this._relayValveInfo.origY;
 		this._relayValveBase.cursor = "pointer";
+		//full simulation button
+		var data = {
+			images: ["img/bv/simulationSprite.png"],
+			frames: {width:210, height:43},
+			animations: {fs:0, fsh:1, ss:2, ssh:3}
+		};
+	    var spriteSheet = new createjs.SpriteSheet(data);
+		this._fullSimulationBtn.constructor(spriteSheet, "fs");
+		this._fullSimulationBtn.name = "fullSimulation";
+		this._fullSimulationBtn.x = 350;
+		this._fullSimulationBtn.y = -30;
+		this._fullSimulationBtn.cursor = "pointer";
+		this._fullsimulationHelper = new createjs.ButtonHelper(this._fullSimulationBtn, "fs", "fsh");
+		//help text
+		this._instructions.constructor("Click on valve to activate", "30px Arial", "#000000");
+		this._instructions.name = "instructions";
+		this._instructions.x = 285;
+		this._instructions.y = 350;
 		//add 'em all
-		this.valveBase.addChild(this._chargingValveBase, this._bvicBase, this._lomvBase, this._rpValveBase, this._regulatingValveBase, this._relayValveBase);
+		this.valveBase.addChild(this._chargingValveBase, this._bvicBase, this._lomvBase, this._rpValveBase, this._regulatingValveBase, this._relayValveBase, this._fullSimulationBtn, this._instructions);
 	};
 
 
