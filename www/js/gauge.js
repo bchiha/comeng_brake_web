@@ -7,7 +7,8 @@ this.brakeSimulator = this.brakeSimulator||{};
 	"use strict";
 
 	//constructor
-	function Gauge(radius, colour, maxScale, redNeedle=false) {
+	function Gauge(radius, colour, maxScale, redNeedle) {
+		var redNeedle = (typeof redNeedle !== 'undefined') ?  redNeedle : false;
 		//public properties
 		this.gauge = new createjs.Container();
 		//private properties
@@ -32,7 +33,8 @@ this.brakeSimulator = this.brakeSimulator||{};
 	var p = Gauge.prototype;
 
 	//public methods
-	p.setNeedle = function(scale, type="white") {
+	p.setNeedle = function(scale, type) {
+		var type = (typeof type !== 'undefined') ?  type : "white";
 		var tick = 315 / this._maxScale;
 		var frameToGo = scale * tick;
 		if (type == "white") {
@@ -42,7 +44,8 @@ this.brakeSimulator = this.brakeSimulator||{};
 		}
 	};
 
-	p.getNeedleValue = function(type="white") {
+	p.getNeedleValue = function(type) {
+		var type = (typeof type !== 'undefined') ?  type : "white";
 		var tick = 315 / this._maxScale;
 		if (type == "white") {
 			return this._needleWhite.getPosition() / tick;

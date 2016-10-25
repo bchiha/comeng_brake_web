@@ -107,7 +107,8 @@ var onSimulationType = function(event) {
 }
 
 //focus or unfocus Gauges
-var focusGauges = function(enlarge = true) {
+var focusGauges = function(enlarge) {
+	var enlarge = (typeof enlarge !== 'undefined') ?  enlarge : true;
 	if (enlarge) {
 		createjs.Tween.get(gaugeBrakeCylinder.gauge).to({x:300, y:400, scaleX:1.5, scaleY:1.5}, 1000, createjs.Ease.sineOut);
 		createjs.Tween.get(gaugeDual.gauge).to({x:700, y:400, scaleX:1.5, scaleY:1.5}, 1000, createjs.Ease.sineOut);

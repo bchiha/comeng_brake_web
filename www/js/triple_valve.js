@@ -38,7 +38,8 @@ this.brakeSimulator = this.brakeSimulator||{};
 	var p = TripleValve.prototype;
 
 	//public methods
-	p.slideIt = function(position, opening=0) {
+	p.slideIt = function(position, opening) {
+		var opening = (typeof opening !== 'undefined') ?  opening : 0;
 		var range=0;
 		switch (position) {
 			case "release" :
