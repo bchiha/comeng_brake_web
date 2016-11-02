@@ -47,6 +47,8 @@ function init() {
 
 	focusGauges();
 	currentSimulation = "gauges";
+	tripleValve = new brakeSimulator.TripleValve;
+	brakeValve = new brakeSimulator.BrakeValve;
 
 	//set up toggle swtich for EP CB
 	epCB = new brakeSimulator.ToggleSwitch();
@@ -64,7 +66,6 @@ function init() {
 	brakeArrow = new createjs.Shape();
 	brakeArrow.graphics.f("#0000CC").mt(100,260).lt(92.5,270).lt(107.5,270).lt(100,260);
 	stage.addChild(brakeHandle.handleBase, brakeArrow);
-
 
 	//assign keyboard event
 	document.onkeydown = onkeyPressed;
@@ -120,14 +121,12 @@ var focusGauges = function(enlarge) {
 
 //display triple valve
 var displayTripleValve = function() {
-	tripleValve = new brakeSimulator.TripleValve;
 	stage.addChild(tripleValve.valveBase);
 	activeSimulation = tripleValve.valveBase;
 };
 
 //display brake valve
 var displayBrakeValve = function() {
-	brakeValve = new brakeSimulator.BrakeValve;
 	stage.addChild(brakeValve.valveBase);
 	activeSimulation = brakeValve.valveBase;
 };

@@ -256,7 +256,7 @@ this.brakeSimulator = this.brakeSimulator||{};
 		this.valveBase.on("click", function(event) {
 			//find the component and scale it to center screen
 			//also return the existing component
-			if (event.target.name == "fullBackground" || this._fullSimulationBtn.currentAnimation == "ss" || event.target.name == "instructions") {
+			if (event.target.name == "fullBackground" || event.target.name == "instructions") {
 				return;
 			}
 			if (event.target.name == "fullSimulation") {
@@ -380,7 +380,7 @@ this.brakeSimulator = this.brakeSimulator||{};
 	
 	//simulator all components together loading extra air and background
 	p._onFullSimulationClick = function(event) {
-		var newState = this._fullSimulationBtn.currentAnimation == "fsh" ? "ss" : "fs";
+		var newState = this._fullSimulationBtn.currentAnimation.startsWith("fs") ? "ss" : "fs";
 		var tl = new createjs.Timeline([], null, {paused:true});
 		//update helper
 		this._fullsimulationHelper.overLabel = newState + "h";
