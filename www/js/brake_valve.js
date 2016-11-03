@@ -93,6 +93,7 @@ this.brakeSimulator = this.brakeSimulator||{};
 		if (step == 0) {
 			this._previousStep = 0;
 		}
+		var simulatedPressure = 1;
 		//charging valve
 		if (this._isActive.chargingValve) {
 			if (position == "emergency") {
@@ -207,20 +208,25 @@ this.brakeSimulator = this.brakeSimulator||{};
 				if (bvicOpen) {
 					tl.addTween(createjs.Tween.get(this._airBVtoBP, {override:true}).wait(500).to({alpha:(1-((pressurePercent*7)/15))}, 1000));
 				}
-			} else if (onAir && position == "applied" && this._relayValveDiapham.scaleX <= (1 + pressurePercent * 7)) {
+			} else if (onAir && position == "applied" && (this._relayValveDiapham.scaleX <= (1 + pressurePercent * 7)) || (this._airRVtoBV.alpha==0)) {
+				if (this._airRVtoBV.alpha==0) {
+					simulatedPressure = 1;
+				} else {
+					simulatedPressure = pressurePercent;
+				}
 				tl.addTween(
-					createjs.Tween.get(this._relayValveDiapham, {override:true}).to({scaleX:(1 + pressurePercent * 7)}, 2000),
-					createjs.Tween.get(this._airRVBP, {override:true}).wait(500).to({alpha:(1-((pressurePercent*7)/15))}, 1000),
-					createjs.Tween.get(this._airBvic, {override:true}).wait(500).to({alpha:(1-((pressurePercent*7)/15))}, 1000),
-					createjs.Tween.get(this._airRVtoBV, {override:true}).wait(500).to({alpha:(1-((pressurePercent*7)/15))}, 1000),
-					createjs.Tween.get(this._airRVEQ, {override:true}).to({alpha:(1-((pressurePercent*7)/15))}, 1000),
-					createjs.Tween.get(this._airLomv, {override:true}).to({alpha:(1-((pressurePercent*7)/15))}, 1000),
-					createjs.Tween.get(this._airEQ, {override:true}).to({alpha:(1-((pressurePercent*7)/15))}, 1000),
+					createjs.Tween.get(this._relayValveDiapham, {override:true}).to({scaleX:(1 + simulatedPressure * 7)}, 2000),
+					createjs.Tween.get(this._airRVBP, {override:true}).wait(500).to({alpha:(1-((simulatedPressure*7)/15))}, 1000),
+					createjs.Tween.get(this._airBvic, {override:true}).wait(500).to({alpha:(1-((simulatedPressure*7)/15))}, 1000),
+					createjs.Tween.get(this._airRVtoBV, {override:true}).wait(500).to({alpha:(1-((simulatedPressure*7)/15))}, 1000),
+					createjs.Tween.get(this._airRVEQ, {override:true}).to({alpha:(1-((simulatedPressure*7)/15))}, 1000),
+					createjs.Tween.get(this._airLomv, {override:true}).to({alpha:(1-((simulatedPressure*7)/15))}, 1000),
+					createjs.Tween.get(this._airEQ, {override:true}).to({alpha:(1-((simulatedPressure*7)/15))}, 1000),
 					createjs.Tween.get(this._relayValveExhaustFlap, {override:true}).to({rotation:60}, 1000, createjs.Ease.sineOut).to({rotation:0}, 1000, createjs.Ease.sineOut),
-					createjs.Tween.get(this._airCVtoE, {override:true}).to({alpha:(1-((pressurePercent*7)/15))}, 1000).to({alpha:0}, 1000)
+					createjs.Tween.get(this._airCVtoE, {override:true}).to({alpha:(1-((simulatedPressure*7)/15))}, 1000).to({alpha:0}, 1000)
 				);
 				if (bvicOpen) {
-					tl.addTween(createjs.Tween.get(this._airBVtoBP, {override:true}).wait(500).to({alpha:(1-((pressurePercent*7)/15))}, 1000));
+					tl.addTween(createjs.Tween.get(this._airBVtoBP, {override:true}).wait(500).to({alpha:(1-((simulatedPressure*7)/15))}, 1000));
 				}
 			} else if (position == "emergency") {
 				if (onAir) {
@@ -380,7 +386,7 @@ this.brakeSimulator = this.brakeSimulator||{};
 	
 	//simulator all components together loading extra air and background
 	p._onFullSimulationClick = function(event) {
-		var newState = this._fullSimulationBtn.currentAnimation.startsWith("fs") ? "ss" : "fs";
+		var newState = this._fullSimulationBtn.currentAnimation.substr(0,2) == "fs" ? "ss" : "fs";
 		var tl = new createjs.Timeline([], null, {paused:true});
 		//update helper
 		this._fullsimulationHelper.overLabel = newState + "h";
