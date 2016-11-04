@@ -16,8 +16,8 @@ this.brakeSimulator = this.brakeSimulator||{};
 		background.graphics.f("black").r(0, 0, stage.canvas.width, stage.canvas.height);
 		background.alpha = 0.3;
 		var message = new createjs.Bitmap("img/help_msg.png");
-		message.x = stage.canvas.width/2 - message.getBounds().width/2;
-		message.y = stage.canvas.height/2 - message.getBounds().height/2;
+		message.x = stage.canvas.width/2 - 300/2;
+		message.y = stage.canvas.height/2 - 450/2;
 
 		this.helpInfo.scaleY = this.helpInfo.scaleX = 0.1;
 		this.helpInfo.alpha = 0;
