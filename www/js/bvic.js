@@ -57,6 +57,7 @@ this.brakeSimulator = this.brakeSimulator||{};
 		var hexigon = [[0,0],[0,15],[10,25],[25,25],[35,15],[35,0],[25,-10],[10,-10],[0,0]];
 		var handle = [[30,20],[120,20],[125,15],[127.5,10],[127.5,5],[125,0],[120,-5],[30,-5]];
 		var g = this._handle.graphics;
+		g.f("white").dr(0, -27, 130, 70);
 		this._drawPoly(g, handle);
 		this._drawPoly(g, hexigon);
 		g.mt(25,10).bf("gray").dc(35/2,15/2,7.5);

@@ -59,6 +59,7 @@ this.brakeSimulator = this.brakeSimulator||{};
 	p._drawHandle = function() {
 		var handle = [[30,20],[170,20],[175,15],[177,10],[178.5,5],[178.5,0],[177,-5],[175,-10],[170,-15],[30,-15]];
 		var g = this._handle.graphics, dx, dy;
+		g.f("white").dr(0, -40, 180, 80);
 		g.f("#B93037").dc(0, 0, 60);
 		g.f("black").dc(0, 0, 50);
 		this._drawPoly(g, handle);
