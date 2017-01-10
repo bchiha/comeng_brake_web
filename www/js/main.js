@@ -25,8 +25,11 @@ function init() {
 	// update mouse event ticks and track if outside canvas
 	stage.enableMouseOver(10);
 	stage.mouseMoveOutside = true;
-	stage.canvas.width = window.innerWidth;
-	stage.canvas.height = window.innerHeight;
+
+	// create resize listeners for canvas
+	window.addEventListener('resize', resizeCanvas, false);
+	window.addEventListener('orientationchange', resizeCanvas, false);
+	resizeCanvas();
 
 	document.getElementById("version").innerHTML = VERSION+"";
 
@@ -267,4 +270,24 @@ var setDualGauge = function() {
 				break;
 		}
 	}
+};
+
+var resizeCanvas = function() {
+    var widthToHeight = 1000 / 700;
+    var newWidth = window.innerWidth;
+    var newHeight = window.innerHeight;
+    var newWidthToHeight = newWidth / newHeight;
+
+    if (newWidthToHeight > widthToHeight) {
+        newWidth = newHeight * widthToHeight;
+        document.body.style.height = newHeight + 'px';
+        document.body.style.width = newWidth + 'px';
+    } else {
+        newHeight = newWidth / widthToHeight;
+        document.body.style.width = newWidth + 'px';
+        document.body.style.height = newHeight + 'px';
+    }
+
+    document.body.style.marginTop = (-newHeight / 2) + 'px';
+    document.body.style.marginLeft = (-newWidth / 2) + 'px';
 };
