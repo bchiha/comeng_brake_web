@@ -1,7 +1,7 @@
 // main js file for simulator.  Requires CreateJS libraries
 
 // constants
-const VERSION = 'v2.1.2';
+const VERSION = 'v2.1.3';
 const MAX_REGULATING_VALVE = 550;
 const MIN_REGULATING_VALVE = 410;
 const EMERGENCY_PRESSURE = 275;
@@ -280,12 +280,12 @@ var resizeCanvas = function() {
 
     if (newWidthToHeight > widthToHeight) {
         newWidth = newHeight * widthToHeight;
-        document.body.style.height = newHeight + 'px';
+        document.body.style.height = newHeight-40 + 'px';
         document.body.style.width = newWidth + 'px';
     } else {
         newHeight = newWidth / widthToHeight;
         document.body.style.width = newWidth + 'px';
-        document.body.style.height = newHeight + 'px';
+        document.body.style.height = newHeight-40 + 'px';
     }
 
     document.body.style.marginTop = (-newHeight / 2) + 'px';
