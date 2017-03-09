@@ -1,7 +1,7 @@
 // main js file for simulator.  Requires CreateJS libraries
 
 // constants
-const VERSION = 'v2.1.1';
+const VERSION = 'v2.1.2';
 const MAX_REGULATING_VALVE = 550;
 const MIN_REGULATING_VALVE = 410;
 const EMERGENCY_PRESSURE = 275;
