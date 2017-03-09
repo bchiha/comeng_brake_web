@@ -262,7 +262,7 @@ this.brakeSimulator = this.brakeSimulator||{};
 		this.valveBase.on("click", function(event) {
 			//find the component and scale it to center screen
 			//also return the existing component
-			if (event.target.name == "fullBackground" || event.target.name == "instructions") {
+			if (this._fullSimulationBtn.currentAnimation == "ss" || event.target.name == "fullBackground" || event.target.name == "instructions") {
 				return;
 			}
 			if (event.target.name == "fullSimulation") {
@@ -325,7 +325,7 @@ this.brakeSimulator = this.brakeSimulator||{};
 		}, this);
 		//mouse over (pointer and name)
 		this.valveBase.on("mouseover", function(event) {
-			if (event.target.name == "fullSimulation" || event.target.name == "fullBackground" || event.target.name == "instructions") {
+			if (event.target.name == null || event.target.name == "fullSimulation" || event.target.name == "fullBackground" || event.target.name == "instructions") {
 				return;
 			}
 			if (this._compTextBase.children.length == 0 && event.target.name != this._activeComp.name) {
