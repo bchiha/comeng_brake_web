@@ -19,24 +19,29 @@ this.brakeSimulator = this.brakeSimulator||{};
 		this._chargingValveBase = new createjs.Container();
 		this._chargingValve = new createjs.Bitmap("img/bv/chargingValve.png");
 		this._chargingValveSlider = new createjs.Bitmap("img/bv/chargingValveSlider.png");
+		this._chargingValveText = new createjs.Text();
 		this._bvicBase = new createjs.Container();
 		this._bvic = new createjs.Bitmap("img/bv/bviCock.png");
 		this._bvicSlider = new createjs.Bitmap("img/bv/bviCockSlider.png");
+		this._bvicText = new createjs.Text();
 		this._lomvBase = new createjs.Container();
 		this._lomv = new createjs.Bitmap("img/bv/lomv.png");
 		this._lomvSlider = new createjs.Bitmap("img/bv/lomvSlider.png");
 		this._lomvBall = new createjs.Bitmap("img/bv/lomvBall.png");
+		this._lomvText = new createjs.Text();
 		this._rpValveBase = new createjs.Container();
 		this._rpValve = new createjs.Bitmap("img/bv/releasePreventionValve.png");
 		this._rpValveSlider = new createjs.Bitmap("img/bv/releasePreventionValveSlider.png");
 		this._airRPOut = new createjs.Bitmap("img/bv/airReleasePreventionOut.png");
 		this._airRPIn = new createjs.Bitmap("img/bv/airReleasePreventionIn.png");
+		this._rpValveText = new createjs.Text();
 		this._regulatingValveBase = new createjs.Container();
 		this._regulatingValve = new createjs.Bitmap("img/bv/regulatingValve.png");
 		this._regulatingValveSlider = new createjs.Bitmap("img/bv/regulatingValveSlider.png");
 		this._regulatingValveLevel = new createjs.Bitmap("img/bv/regulatingValveLevel.png");
 		this._airRegV = new createjs.Bitmap("img/bv/airRegulatingValve.png");
 		this._airRegVJ = new createjs.Bitmap("img/bv/airRegulatingValveJ.png");
+		this._regulatingValveText = new createjs.Text();
 		this._relayValveBase = new createjs.Container();
 		this._relayValve = new createjs.Bitmap("img/bv/relayValve.png");
 		this._relayValveDiapham = new createjs.Bitmap("img/bv/relayValveDiapham.png");
@@ -44,6 +49,7 @@ this.brakeSimulator = this.brakeSimulator||{};
 		this._relayValveExhaustFlap = new createjs.Bitmap("img/bv/relayValveExhaustFlap.png");
 		this._airRVBP = new createjs.Bitmap("img/bv/airRelayValveBp.png");
 		this._airRVEQ = new createjs.Bitmap("img/bv/airRelayValveEq.png");
+		this._relayValveText = new createjs.Text();
 		//full simulation stuff
 		this._fullBackgroundBase = new createjs.Container();
 		this._fullBackground = new createjs.Bitmap("img/bv/fullBackground.png");
@@ -59,7 +65,6 @@ this.brakeSimulator = this.brakeSimulator||{};
 		this._airRVtoLM = new createjs.Bitmap("img/bv/airRVtoLM.png");
 		this._airEQ = new createjs.Bitmap("img/bv/airEQ.png");
 		//other stuff
-		this._compTextBase = new createjs.Container();
 		this._fullSimulationBtn = new createjs.Sprite();
 		this._fullsimulationHelper = null
 		this._instructions = new createjs.Text();
@@ -262,7 +267,7 @@ this.brakeSimulator = this.brakeSimulator||{};
 		this.valveBase.on("click", function(event) {
 			//find the component and scale it to center screen
 			//also return the existing component
-			if (this._fullSimulationBtn.currentAnimation == "ss" || event.target.name == "fullBackground" || event.target.name == "instructions") {
+			if (this._fullSimulationBtn.currentAnimation == "ss" || event.target.name == "fullBackground" || event.target.name == "instructions" || event.target.name == null) {
 				return;
 			}
 			if (event.target.name == "fullSimulation") {
@@ -311,76 +316,11 @@ this.brakeSimulator = this.brakeSimulator||{};
 						this._activeComp.origY = this._relayValveInfo.origY;
 						break;
 				}
-				//remove the component label if any
-				if (this._compTextBase.children.length > 0) {
-					createjs.Tween.get(this._compTextBase).to({alpha:0}, 100).call(function() {
-						this._compTextBase.removeAllChildren();
-						this.valveBase.removeChild(this._compTextBase);
-					}, [], this);
-				}
+				//activate the component
 				this._isActive[this._activeComp.name] = true;
 				createjs.Tween.get(this._activeComp.component, {override:true}).to({x:(375 - this._activeComp.component.getBounds().width/2), y:70, scaleX:2, scaleY:2}, 2000, createjs.Ease.sineOut);
 			}
 
-		}, this);
-		//mouse over (pointer and name)
-		this.valveBase.on("mouseover", function(event) {
-			if (event.target.name == null || event.target.name == "fullSimulation" || event.target.name == "fullBackground" || event.target.name == "instructions") {
-				return;
-			}
-			if (this._compTextBase.children.length == 0 && event.target.name != this._activeComp.name) {
-				var compTxt = new createjs.Text("", "30px Arial", "#FFFFFF");
-				var textBack = new createjs.Shape();
-				//add text
-				switch (event.target.name) {
-					case "chargingValve" :
-						compTxt.text = this._chargingValveInfo.desc;
-						this._compTextBase.x = this._chargingValveBase.x - 40;
-						this._compTextBase.y = this._chargingValveBase.y - 40;
-						break;
-					case "relayValve" :
-						compTxt.text = this._relayValveInfo.desc;
-						this._compTextBase.x = this._relayValveBase.x;
-						this._compTextBase.y = this._relayValveBase.y - 40;
-						break;
-					case "lomv" :
-						compTxt.text = this._lomvInfo.desc;
-						this._compTextBase.x = this._lomvBase.x - 50;
-						this._compTextBase.y = this._lomvBase.y - 35;
-						break;
-					case "rpValve" :
-						compTxt.text = this._rpValveInfo.desc;
-						this._compTextBase.x = this._rpValveBase.x - 250;
-						this._compTextBase.y = this._rpValveBase.y - 50;
-						break;
-					case "bvic" :
-						compTxt.text = this._bvicInfo.desc;
-						this._compTextBase.x = this._bvicBase.x - 10;
-						this._compTextBase.y = this._bvicBase.y - 50;
-						break;
-					case "regulatingValve" :
-						compTxt.text = this._regulatingValveInfo.desc;
-						this._compTextBase.x = this._regulatingValveBase.x - 110;
-						this._compTextBase.y = this._regulatingValveBase.y - 50;
-						break;
-				}
-				compTxt.x=compTxt.y=5;					
-				//add background rectangle
-				textBack.graphics.f("black").rr(0,0,compTxt.getBounds().width+10,compTxt.getBounds().height+10,10);
-				this._compTextBase.addChild(textBack, compTxt);
-				this._compTextBase.alpha=0;
-				this.valveBase.addChild(this._compTextBase);
-				createjs.Tween.get(this._compTextBase).to({alpha:1}, 500);
-			}
-		}, this);
-		//mouse out (pointer and name)
-		this.valveBase.on("rollout", function(event) {
-			if (this._compTextBase.children.length > 0 && event.target.name != this._activeComp.name) {
-				createjs.Tween.get(this._compTextBase).to({alpha:0}, 0).call(function() {
-					this._compTextBase.removeAllChildren();
-					this.valveBase.removeChild(this._compTextBase);
-				}, [], this);
-			}
 		}, this);
 	};
 	
@@ -410,7 +350,13 @@ this.brakeSimulator = this.brakeSimulator||{};
 				createjs.Tween.get(this._lomvBase).to({x:211,y:155}, 2000, createjs.Ease.sineOut),
 				createjs.Tween.get(this._relayValveBase).to({x:463,y:145}, 2000, createjs.Ease.sineOut),
 				createjs.Tween.get(this._chargingValveBase).to({x:679,y:50}, 2000, createjs.Ease.sineOut),
-				createjs.Tween.get(this._bvicBase).to({x:734,y:241}, 2000, createjs.Ease.sineOut)
+				createjs.Tween.get(this._bvicBase).to({x:734,y:241}, 2000, createjs.Ease.sineOut),
+				createjs.Tween.get(this._rpValveText).to({alpha:0}, 2000),
+				createjs.Tween.get(this._regulatingValveText).to({alpha:0}, 2000),
+				createjs.Tween.get(this._lomvText).to({alpha:0}, 2000),
+				createjs.Tween.get(this._relayValveText).to({alpha:0}, 2000),
+				createjs.Tween.get(this._chargingValveText).to({alpha:0}, 2000),
+				createjs.Tween.get(this._bvicText).to({alpha:0}, 2000)
 			);
 			//component air
 			this._airLomv.name = "lomv";
@@ -464,6 +410,12 @@ this.brakeSimulator = this.brakeSimulator||{};
 				createjs.Tween.get(this._relayValveBase).to({x:this._relayValveInfo.origX,y:this._relayValveInfo.origY}, 2000, createjs.Ease.backOut),
 				createjs.Tween.get(this._chargingValveBase).to({x:this._chargingValveInfo.origX,y:this._chargingValveInfo.origY}, 2000, createjs.Ease.backOut),
 				createjs.Tween.get(this._bvicBase).to({x:this._bvicInfo.origX,y:this._bvicInfo.origY}, 2000, createjs.Ease.backOut),
+				createjs.Tween.get(this._rpValveText).to({alpha:1}, 2000),
+				createjs.Tween.get(this._regulatingValveText).to({alpha:1}, 2000),
+				createjs.Tween.get(this._lomvText).to({alpha:1}, 2000),
+				createjs.Tween.get(this._relayValveText).to({alpha:1}, 2000),
+				createjs.Tween.get(this._chargingValveText).to({alpha:1}, 2000),
+				createjs.Tween.get(this._bvicText).to({alpha:1}, 2000),
 				createjs.Tween.get(this._fullBackgroundBase).to({alpha:0,scaleX:2,scaleY:2}, 2000, createjs.Ease.sineOut).call(function() {
 					this.valveBase.removeChild(this._fullBackgroundBase);
 				}, [], this),
@@ -482,44 +434,56 @@ this.brakeSimulator = this.brakeSimulator||{};
 
 	p._drawIt = function() {
 		//charging valve
-		this._chargingValve.name = this._chargingValveSlider.name = "chargingValve";
+		this._chargingValve.name = this._chargingValveSlider.name = this._chargingValveText.name = "chargingValve";
 		this._chargingValveSlider.y=20;
-		this._chargingValveBase.addChild(this._chargingValve, this._chargingValveSlider);
+		this._chargingValveText.constructor(this._chargingValveInfo.desc, "16px Arial", "#000000");
+		this._chargingValveText.x = this._chargingValveBase.x;
+		this._chargingValveText.y = this._chargingValveBase.y+80;
+		this._chargingValveBase.addChild(this._chargingValve, this._chargingValveSlider, this._chargingValveText);
 		this._chargingValveBase.x = this._chargingValveInfo.origX;
 		this._chargingValveBase.y = this._chargingValveInfo.origY;
 		this._chargingValveBase.cursor = "pointer";
 		//bvic
-		this._bvic.name = this._bvicSlider.name = "bvic";
+		this._bvic.name = this._bvicSlider.name = this._bvicText.name = "bvic";
 		this._bvicSlider.y = 20;
 		this._bvicSlider.x = 15;
-		this._bvicBase.addChild(this._bvic, this._bvicSlider);
+		this._bvicText.constructor(this._bvicInfo.desc, "14px Arial", "#000000");
+		this._bvicText.x = this._bvicBase.x+30;
+		this._bvicText.y = this._bvicBase.y+90;
+		this._bvicBase.addChild(this._bvic, this._bvicSlider, this._bvicText);
 		this._bvicBase.x = this._bvicInfo.origX;
 		this._bvicBase.y = this._bvicInfo.origY;
 		this._bvicBase.cursor = "pointer";
 		//lomv
-		this._lomv.name = this._lomvSlider.name = this._lomvBall.name = "lomv";
+		this._lomv.name = this._lomvSlider.name = this._lomvBall.name = this._lomvText.name = "lomv";
 		this._lomvSlider.y = 5;
 		this._lomvSlider.x = 27;
 		this._lomvBall.y = 47;
 		this._lomvBall.x = 27;
-		this._lomvBase.addChild(this._lomv, this._lomvSlider, this._lomvBall);
+		this._lomvText.constructor(this._lomvInfo.desc, "16px Arial", "#000000");
+		this._lomvText.x = this._lomvBase.x;
+		this._lomvText.y = this._lomvBase.y+120;
+		this._lomvBase.addChild(this._lomv, this._lomvSlider, this._lomvBall, this._lomvText);
 		this._lomvBase.x = this._lomvInfo.origX;
 		this._lomvBase.y = this._lomvInfo.origY;
 		this._lomvBase.cursor = "pointer";
 		//release prevention valve
-		this._rpValve.name = this._airRPOut.name = this._airRPIn.name = this._rpValveSlider.name = "rpValve";
+		this._rpValve.name = this._airRPOut.name = this._airRPIn.name = this._rpValveSlider.name = this._rpValveText.name = "rpValve";
 		this._rpValveSlider.x = 13;
 		this._rpValveSlider.y = 25;
 		this._airRPOut.x = 34.5;
 		this._airRPOut.y = 22.5;
 		this._airRPIn.x = 2.5;
 		this._airRPIn.y = 0;
-		this._rpValveBase.addChild(this._rpValve, this._airRPOut, this._airRPIn, this._rpValveSlider);
+		this._rpValveText.constructor(this._rpValveInfo.desc, "16px Arial", "#000000");
+		this._rpValveText.x = this._rpValveBase.x-10;
+		this._rpValveText.y = this._rpValveBase.y+70;
+		this._rpValveBase.addChild(this._rpValve, this._airRPOut, this._airRPIn, this._rpValveSlider, this._rpValveText);
 		this._rpValveBase.x = this._rpValveInfo.origX;
 		this._rpValveBase.y = this._rpValveInfo.origY;
 		this._rpValveBase.cursor = "pointer";
 		//regulating valve;
-		this._regulatingValve.name = this._airRegV.name = this._airRegVJ.name = this._regulatingValveSlider.name = this._regulatingValveLevel.name = "regulatingValve";
+		this._regulatingValve.name = this._airRegV.name = this._airRegVJ.name = this._regulatingValveSlider.name = this._regulatingValveLevel.name = this._regulatingValveText.name = "regulatingValve";
 		this._airRegV.x = 13;
 		this._airRegV.y = 58;
 		this._airRegVJ.x = -7;
@@ -530,12 +494,15 @@ this.brakeSimulator = this.brakeSimulator||{};
 		this._regulatingValveLevel.x = 55;
 		this._regulatingValveLevel.y = 56;
 		this._regulatingValveLevel.regY=32;
-		this._regulatingValveBase.addChild(this._regulatingValve, this._airRegV, this._airRegVJ, this._regulatingValveSlider, this._regulatingValveLevel);
+		this._regulatingValveText.constructor(this._regulatingValveInfo.desc, "16px Arial", "#000000");
+		this._regulatingValveText.x = this._regulatingValveBase.x;
+		this._regulatingValveText.y = this._regulatingValveBase.y+110;
+		this._regulatingValveBase.addChild(this._regulatingValve, this._airRegV, this._airRegVJ, this._regulatingValveSlider, this._regulatingValveLevel, this._regulatingValveText);
 		this._regulatingValveBase.x = this._regulatingValveInfo.origX;
 		this._regulatingValveBase.y = this._regulatingValveInfo.origY;
 		this._regulatingValveBase.cursor = "pointer";
 		//relay valve;
-		this._relayValve.name = this._airRVBP.name = this._airRVEQ.name = this._relayValveDiapham.name = this._relayValveChargeFlap.name = this._relayValveExhaustFlap.name = "relayValve";
+		this._relayValve.name = this._airRVBP.name = this._airRVEQ.name = this._relayValveDiapham.name = this._relayValveChargeFlap.name = this._relayValveExhaustFlap.name = this._relayValveText.name = "relayValve";
 		this._airRVBP.x = 94;
 		this._airRVEQ.x = 23;
 		this._relayValveDiapham.x = 92;
@@ -548,7 +515,10 @@ this.brakeSimulator = this.brakeSimulator||{};
 		this._relayValveExhaustFlap.y = 111;
 		this._relayValveExhaustFlap.regX = 2;
 		this._relayValveExhaustFlap.regY = 22;
-		this._relayValveBase.addChild(this._relayValve, this._airRVBP, this._airRVEQ, this._relayValveDiapham, this._relayValveChargeFlap, this._relayValveExhaustFlap);
+		this._relayValveText.constructor(this._relayValveInfo.desc, "16px Arial", "#000000");
+		this._relayValveText.x = this._relayValveBase.x+50;
+		this._relayValveText.y = this._relayValveBase.y+140;
+		this._relayValveBase.addChild(this._relayValve, this._airRVBP, this._airRVEQ, this._relayValveDiapham, this._relayValveChargeFlap, this._relayValveExhaustFlap, this._relayValveText);
 		this._relayValveBase.x = this._relayValveInfo.origX;
 		this._relayValveBase.y = this._relayValveInfo.origY;
 		this._relayValveBase.cursor = "pointer";
@@ -569,7 +539,7 @@ this.brakeSimulator = this.brakeSimulator||{};
 		this._instructions.constructor("Click on valve to activate", "30px Arial", "#000000");
 		this._instructions.name = "instructions";
 		this._instructions.x = 285;
-		this._instructions.y = 350;
+		this._instructions.y = 385;
 		//add 'em all
 		this.valveBase.addChild(this._chargingValveBase, this._bvicBase, this._lomvBase, this._rpValveBase, this._regulatingValveBase, this._relayValveBase, this._fullSimulationBtn, this._instructions);
 	};
