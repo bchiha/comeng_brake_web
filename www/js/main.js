@@ -1,7 +1,7 @@
 // main js file for simulator.  Requires CreateJS libraries
 
 // constants
-const VERSION = 'v2.1.3';
+const VERSION = 'v2.1.4';
 const MAX_REGULATING_VALVE = 550;
 const MIN_REGULATING_VALVE = 410;
 const EMERGENCY_PRESSURE = 275;
@@ -136,31 +136,33 @@ var displayBrakeValve = function() {
 
 //keyboard events
 var onkeyPressed = function(keyboardEvent) {
-	switch (keyboardEvent.code) {
-		case "KeyO" :
-			bvic.setToOpen();
-			break;
-		case "KeyC" :
-			bvic.setToClosed();
-			break;
-		case "KeyE" :
-			epCB.toggleIt();
-			break;
-		case "KeyG" :
-			document.getElementById("simulationType").value="gauges";
-			document.getElementById("simulationType").onchange();
-			break;
-		case "KeyT" :
-			document.getElementById("simulationType").value="tripleValve";
-			document.getElementById("simulationType").onchange();
-			break;
-		case "KeyB" :
-			document.getElementById("simulationType").value="brakeValve";
-			document.getElementById("simulationType").onchange();
-			break;
-	}
-	if (keyboardEvent.code.substring(0,5) == "Digit") {
-		brakeHandle.stepTo(parseInt(keyboardEvent.code.charAt(5)));
+	var key = String.fromCharCode(keyboardEvent.charCode || keyboardEvent.keyCode).toUpperCase();
+	if ('0123456789'.indexOf(key) !== -1) {
+		brakeHandle.stepTo(parseInt(key));
+	} else {
+		switch (key) {
+			case "O" :
+				bvic.setToOpen();
+				break;
+			case "C" :
+				bvic.setToClosed();
+				break;
+			case "E" :
+				epCB.toggleIt();
+				break;
+			case "G" :
+				document.getElementById("simulationType").value="gauges";
+				document.getElementById("simulationType").onchange();
+				break;
+			case "T" :
+				document.getElementById("simulationType").value="tripleValve";
+				document.getElementById("simulationType").onchange();
+				break;
+			case "B" :
+				document.getElementById("simulationType").value="brakeValve";
+				document.getElementById("simulationType").onchange();
+				break;
+		}
 	}
 	animateIt();
 };
