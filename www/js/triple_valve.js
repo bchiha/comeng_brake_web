@@ -28,6 +28,9 @@ this.brakeSimulator = this.brakeSimulator||{};
 		this._mainValveAirL = new createjs.Bitmap("img/tv/mainValveAirL.png");
 		this._mainValveAirT = new createjs.Bitmap("img/tv/mainValveAirT.png");
 		this._mainValveAirG = new createjs.Bitmap("img/tv/mainValveAirG.png");
+		this._tripleValveText = new createjs.Text();
+		this._auxText = new createjs.Text();
+		this._brakePipeText = new createjs.Text();
 
  		//draw valve
 		this._drawIt();
@@ -61,7 +64,7 @@ this.brakeSimulator = this.brakeSimulator||{};
 				range = 257 + Math.round(10 * opening);
 				//slide valve to opening position then to lap possition;
 				createjs.Tween.get(this._slideValve,{override:true}).to({x:range}, 1000).to({x:257}, 1000);
-				//aux tank full range is 140px and 550kpa, BP range is 140kPa. 
+				//aux tank full range is 140px and 550kpa, BP range is 140kPa.
 				createjs.Tween.get(this._auxMask,{override:true}).to({scaleY:-1 * ((550 - (150*opening)) / 550)}, 1000);
 				//brake block x from 0 to 55, Cylinder from 17 to 200
 				createjs.Tween.get(this._brakeCylMask,{override:true}).to({scaleX:-1 * opening}, 1000);
@@ -96,7 +99,10 @@ this.brakeSimulator = this.brakeSimulator||{};
 		//add triple valve
 		this._tripleValve.x = 0;
 		this._tripleValve.y = 0;
-		this.valveBase.addChild(this._tripleValve);
+		this._tripleValveText.constructor("Triple Valve", "20px Arial", "#000000");
+		this._tripleValveText.x = 430;
+		this._tripleValveText.y = 150;
+		this.valveBase.addChild(this._tripleValve, this._tripleValveText);
 		//add auxiliry tank
 		this._auxEmpty.x = this._auxFull.x = this._auxMask.x = 10;
 		this._auxEmpty.y = this._auxFull.y = 65;
@@ -104,7 +110,10 @@ this.brakeSimulator = this.brakeSimulator||{};
 		this._auxMask.y = 138;
 		this._auxMask.scaleY = 0;
 		this._auxFull.mask = this._auxMask;
-		this.valveBase.addChild(this._auxEmpty, this._auxFull, this._auxMask);
+		this._auxText.constructor("Auxilary Tank", "20px Arial", "#000000");
+		this._auxText.x = 40;
+		this._auxText.y = 150;
+		this.valveBase.addChild(this._auxEmpty, this._auxFull, this._auxMask, this._auxText);
 		//add brake cylinder
 		this._brakeCylEmpty.x = this._brakeCylFull.x = 120;
 		this._brakeCylEmpty.y = this._brakeCylFull.y = this._brakeCylMask.y = 255;
@@ -116,7 +125,10 @@ this.brakeSimulator = this.brakeSimulator||{};
 		this._brakeBlock.y = 235;
 		this._brakeSpring.x = 125;
 		this._brakeSpring.y = 275;
-		this.valveBase.addChild(this._brakeCylEmpty, this._brakeCylFull, this._brakeCylMask, this._brakeBlock, this._brakeSpring);
+		this._brakePipeText.constructor("Brake Pipe", "20px Arial", "#000000");
+		this._brakePipeText.x = 220;
+		this._brakePipeText.y = 20;
+		this.valveBase.addChild(this._brakeCylEmpty, this._brakeCylFull, this._brakeCylMask, this._brakeBlock, this._brakeSpring, this._brakePipeText);
 		//add air
 		this._brakePipeAir.x = 4;
 		this._brakePipeAir.y = 2;
